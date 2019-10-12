@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.UserMapper">
+
+  <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.User">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="loginname" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="localusername" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="mobile" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="email" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="gen_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="last_login_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="login_count" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="status" javaType="java.lang.Boolean" typeHandler="com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler" />
+      <arg column="img" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, loginname, password, localusername, mobile, email, gen_time, last_login_time, 
+    login_count, status, img
+  </sql>
+
+  <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where loginname = #{loginname,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from t_user
+    where loginname = #{loginname,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_user (loginname, password, localusername, 
+      mobile, email, gen_time, 
+      last_login_time, login_count, status, 
+      img)
+    values (#{loginname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{localusername,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{genTime,jdbcType=TIMESTAMP}, 
+      #{lastLoginTime,jdbcType=TIMESTAMP}, #{loginCount,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT}, 
+      #{img,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="com.wismap.springsecuritydemo.model.User">
+    update t_user
+    set loginname = #{loginname,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      localusername = #{localusername,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      gen_time = #{genTime,jdbcType=TIMESTAMP},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      login_count = #{loginCount,jdbcType=INTEGER},
+      status = #{status,jdbcType=SMALLINT},
+      img = #{img,jdbcType=VARCHAR}
+    where loginname = #{loginname,jdbcType=VARCHAR}
+  </update>
+
+</mapper>
