@@ -17,13 +17,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception{
         http
             .authorizeRequests()
-            .anyRequest().authenticated()
-            .and()
-            .formLogin()
-            .and()
-            .logout()
-            .and()
-            .httpBasic();
+            .anyRequest().authenticated().and()
+            .formLogin().loginPage("/login").permitAll().and()
+            .logout().and()
+            //.rememberMe().key("yanpao").tokenValiditySeconds(6).and()//可以记住，但是过期时间没成功
+            .httpBasic().and()
+            .csrf().disable();
     }
 
     @Override
