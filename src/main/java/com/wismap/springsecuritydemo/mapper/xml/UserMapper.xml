@@ -3,19 +3,24 @@
 <mapper namespace="com.wismap.springsecuritydemo.mapper.UserMapper">
 
   <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.User">
-    <constructor>
-      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="loginname" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="localusername" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="mobile" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="email" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="gen_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="last_login_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
-      <arg column="login_count" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="status" javaType="java.lang.Boolean" typeHandler="com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler" />
-      <arg column="img" javaType="java.lang.String" jdbcType="VARCHAR" />
-    </constructor>
+      <id column="id" property="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="loginname" property="loginname" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="password" property="password" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="localusername" property="localusername" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="mobile" property="mobile" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="email" property="email" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="GEN_TIME" property="genTime" javaType="java.util.Date" jdbcType="DATE" />
+      <result column="last_login_time" property="lastLoginTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <result column="login_count" property="loginCount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="status" property="status" javaType="java.lang.Boolean" typeHandler="com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler" />
+      <result column="img" property="img" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <collection property="rolesList" ofType="com.wismap.springsecuritydemo.model.Role" javaType="List">
+        <result column="RID" property="id" jdbcType="BIGINT"/>
+        <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR"/>
+        <result column="ROLE_NAME_LOCAL" property="roleNameLocal" jdbcType="VARCHAR"/>
+        <result column="DESCRIPTION" property="description" jdbcType="VARCHAR"/>
+        <result column="GEN_TIME1" property="genTime" jdbcType="VARCHAR"/>
+      </collection>
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -24,10 +29,28 @@
   </sql>
 
   <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_user
-    where loginname = #{loginname,jdbcType=VARCHAR}
+        SELECT
+        t.ID,
+        t.LOGINNAME,
+        t.PASSWORD,
+        t.LOCALUSERNAME,
+        t.MOBILE,
+        t.EMAIL,
+        t.GEN_TIME,
+        t.LAST_LOGIN_TIME,
+        t.LOGIN_COUNT,
+        t.STATUS,
+        t.IMG,
+        o.ID as RID,
+        o.ROLE_NAME ,
+        o.ROLE_NAME_LOCAL ,
+        o.DESCRIPTION ,
+        o.GEN_TIME
+        FROM
+        t_user t
+        LEFT JOIN T_REF_USER_ROLE r ON t.id = r.USER_ID
+        LEFT JOIN T_ROLE o ON r.ROLE_ID = o.id
+        where t.loginname = #{loginname,jdbcType=VARCHAR}
   </select>
 
   <delete id="delete" parameterType="java.lang.Integer">

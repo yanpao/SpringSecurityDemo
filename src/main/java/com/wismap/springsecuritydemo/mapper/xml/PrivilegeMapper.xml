@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.PrivilegeMapper">
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Privilege">
+        <constructor>
+            <idArg column="ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="PRI_TYPE" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="PRI_SYMBOL" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, PRI_TYPE,PRI_SYMBOL
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+       select
+       <include refid="Base_Column_List" />
+       from t_privilege
+       where pri_type=#{pritype,jdbcType=BIGINT}
+       order by id
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select * from t_privilege where ID = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from t_privilege
+        where ID = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Privilege">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT currval('t_privilege_id_seq')
+        </selectKey>
+        insert into t_privilege (PRI_TYPE,PRI_SYMBOL)
+        values (#{pritype,jdbcType=BIGINT},#{prisymbol,jdbcType=BIGINT})
+    </insert>
+
+    <update id="update" parameterType="com.wismap.springsecuritydemo.model.Privilege">
+        update t_privilege
+        set PRI_TYPE = #{pritype,jdbcType=BIGINT}, PRI_SYMBOL = #{prisymbol,jdbcType=BIGINT}
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectUserByUrl" resultMap="com.wismap.springsecuritydemo.mapper.UserMapper.BaseResultMap">
+        select g.*
+        from t_resource a
+        left join t_ref_privilege_resource b on a."id" = b.res_id
+        left join t_privilege c on b.pri_id = c."id"
+        left join t_ref_privilege_position d on d.privilege_id = c."id"
+        left join t_position e on d.position_id = e."id"
+        left join t_ref_user_position f on f.position_id = e."id"
+        left join t_user g  on g."id" = f.user_id
+        where a.url=#{url,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

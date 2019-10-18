@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
@@ -22,5 +25,4 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new BadCredentialsException("用户不存在");
         return user;
     }
-
 }

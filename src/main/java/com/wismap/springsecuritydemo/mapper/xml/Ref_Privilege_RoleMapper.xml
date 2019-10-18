@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.Ref_Privilege_RoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Ref_Privilege_Role">
+        <constructor>
+            <arg column="PRI_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="ROLE_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </constructor>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Ref_Privilege_Role">
+        insert into t_ref_privilege_role (PRI_ID, ROLE_ID)
+        values (#{priId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT})
+    </insert>
+
+    <delete id="deleteByRoleId">
+        delete from t_ref_privilege_role
+        where ROLE_ID = #{roleId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByPriId">
+        delete from t_ref_privilege_role
+        where PRI_ID = #{priId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="delete">
+        delete from t_ref_privilege_role
+        where PRI_ID = #{priId,jdbcType=BIGINT}
+        and ROLE_ID = #{roleId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectPriByRoleid" resultType="Long">
+        select PRI_ID from t_ref_privilege_role where ROLE_ID = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectRoleidBypri" resultType="Long">
+        select ROLE_ID from t_ref_privilege_role where PRI_ID = #{priId,jdbcType=BIGINT}
+    </select>
+
+
+</mapper>

@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller(value = "/user")
+@Controller
+@RequestMapping(value = "/user")
 public class UserController {
 
     @RequestMapping(value = "/info",method = RequestMethod.GET,produces = "application/json")

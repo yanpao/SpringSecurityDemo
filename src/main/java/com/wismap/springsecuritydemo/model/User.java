@@ -1,10 +1,13 @@
 package com.wismap.springsecuritydemo.model;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class User implements UserDetails {
     private Integer id;
@@ -28,6 +31,8 @@ public class User implements UserDetails {
     private Boolean status;
 
     private String img;
+
+    private List<Role> rolesList;
 
     public User(Integer id, String loginname, String password, String localusername, String mobile, String email, Date genTime, Date lastLoginTime, Integer loginCount, Boolean status, String img) {
         this.id = id;
@@ -139,7 +144,12 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
-        return null;
+        List<GrantedAuthority> Authorities = new ArrayList<GrantedAuthority>();
+        for (Role role:rolesList) {
+            SimpleGrantedAuthority simpleGrantedAuthorityAdmin = new SimpleGrantedAuthority("ROLE_"+role.getRoleName());
+            Authorities.add(simpleGrantedAuthorityAdmin);
+        }
+        return Authorities;
     }
 
     @Override

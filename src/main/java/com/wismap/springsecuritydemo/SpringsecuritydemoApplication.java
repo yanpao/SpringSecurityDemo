@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @MapperScan(basePackages = "com.wismap.springsecuritydemo.mapper")
 @ComponentScan(basePackages ={"com.wismap.springsecuritydemo.utils",
         "com.wismap.springsecuritydemo.security","com.wismap.springsecuritydemo.model",
-        "com.wismap.springsecuritydemo.controller"} )
+        "com.wismap.springsecuritydemo.controller","com.wismap.springsecuritydemo.config"} )
 public class SpringsecuritydemoApplication {
 
     public static void main(String[] args) {

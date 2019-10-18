@@ -18,4 +18,16 @@ public class BaseRouteController {
         return "index";
     }
 
+    @RequestMapping(value = "/admin")
+    public String Admin()
+    {
+        return "admin/admin";
+    }
+
+    @RequestMapping(value = "/user")
+    public String User()
+    {
+        return "user/user";
+    }
+
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.Ref_User_RoleMapper">
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Ref_User_Role">
+        <constructor>
+            <idArg column="USER_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <idArg column="ROLE_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </constructor>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from t_ref_user_role
+        where USER_ID = #{userid,jdbcType=BIGINT}
+        and ROLE_ID = #{roleid,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByUserId" parameterType="map">
+        delete from t_ref_user_role
+        where USER_ID = #{userid,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByRoleId" parameterType="map">
+        delete from t_ref_user_role
+        where ROLE_ID = #{roleid,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Ref_User_Role">
+        insert into t_ref_user_role (USER_ID, ROLE_ID)
+        values (#{userid,jdbcType=BIGINT}, #{roleid,jdbcType=BIGINT})
+    </insert>
+
+</mapper>
