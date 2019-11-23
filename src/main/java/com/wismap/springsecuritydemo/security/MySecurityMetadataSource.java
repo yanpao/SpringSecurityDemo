@@ -1,6 +1,10 @@
 package com.wismap.springsecuritydemo.security;
 
+import com.wismap.springsecuritydemo.mapper.RoleMapper;
+import com.wismap.springsecuritydemo.model.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 
@@ -11,7 +15,9 @@ import java.util.Map;
 
 public class MySecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
-    //全部使用WebExpressionConfigAttribute
+    @Autowired
+    private RoleMapper roleMapper;
+
     private Map<String, List<ConfigAttribute>> allConfigAttribute;
 
     @Override
@@ -22,8 +28,13 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
         String httpMethod = fi.getRequest().getMethod();
         List<ConfigAttribute> attributes = new ArrayList<ConfigAttribute>();
 
-
-        return null;
+        List<Role> allRoles = roleMapper.selectByResources(url);
+        for(Role role : allRoles)
+        {
+            SecurityConfig securityConfig=new SecurityConfig(role.getRoleName());
+            attributes.add(securityConfig);
+        }
+        return attributes;
     }
 
     @Override
