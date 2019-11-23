@@ -16,3 +16,45 @@ CREATE TABLE t_user (
   IMG varchar(255)
 )
 ;
+
+CREATE TABLE t_role (
+  ID SERIAL primary key NOT NULL,
+  ROLE_NAME varchar(32)  NOT NULL UNIQUE,
+  ROLE_NAME_LOCAL varchar(32)  NOT NULL UNIQUE,
+  DESCRIPTION varchar(255) ,
+  GEN_TIME timestamp(6)
+)
+;
+
+CREATE TABLE t_ref_user_role (
+  USER_ID int4 NOT NULL,
+  ROLE_ID int4 NOT NULL
+)
+;
+
+CREATE TABLE t_privilege (
+  ID SERIAL primary key NOT NULL,
+  PRI_TYPE int4 NOT NULL
+)
+;
+
+CREATE TABLE t_ref_privilege_role (
+  PRI_ID int4 NOT NULL,
+  ROLE_ID int4 NOT NULL
+)
+;
+
+CREATE TABLE t_resource (
+  ID SERIAL primary key NOT NULL,
+  URL varchar(100)  NOT NULL UNIQUE,
+  NAME varchar(50),
+  TAG varchar(30) NOT NULL UNIQUE,
+  PID int4 NOT NULL
+)
+;
+
+CREATE TABLE t_ref_privilege_resource (
+  PRI_ID int4 NOT NULL,
+  RES_ID int4 NOT NULL
+)
+;

@@ -7,18 +7,14 @@ public class Privilege implements Serializable {
 
     private Long pritype;
 
-    private Long prisymbol; //0运维，1行政
-
-
 
     public Privilege() {
         super();
     }
 
-    public Privilege(Long id, Long pritype,Long prisymbol) {
+    public Privilege(Long id, Long pritype) {
         this.id = id;
         this.pritype = pritype;
-        this.prisymbol =  prisymbol;
     }
 
     public Long getId() {
@@ -37,11 +33,4 @@ public class Privilege implements Serializable {
         this.pritype = pritype;
     }
 
-    public Long getPrisymbol() {
-        return prisymbol;
-    }
-
-    public void setPrisymbol(Long prisymbol) {
-        this.prisymbol = prisymbol;
-    }
 }

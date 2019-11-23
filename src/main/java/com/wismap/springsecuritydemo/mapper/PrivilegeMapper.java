@@ -1,7 +1,6 @@
 package com.wismap.springsecuritydemo.mapper;
 
 import com.wismap.springsecuritydemo.model.Privilege;
-import com.wismap.springsecuritydemo.model.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -37,18 +36,4 @@ public interface PrivilegeMapper {
     Long insert(Privilege privilege);
 
 
-
-    /**
-     * 更细权限信息
-     * @param privilege 权限信息
-     * @return 更新条数
-     */
-    Long update(Privilege privilege);
-
-    /**
-     * assignee
-     * @param url       url
-     * @return          用户对象集合
-     */
-    List<User> selectUserByUrl(@Param("url") String url);
 }

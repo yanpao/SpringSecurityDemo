@@ -1,31 +1,23 @@
-package com.wismap.springsecuritydemo.mapper;
+package com.wismap.springsecuritydemo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wismap.springsecuritydemo.model.Role;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface RoleMapper {
-
+public interface IRoleService {
     /**
      * 根据角色名查询
      * @param roleName  角色名
      * @return          操作状态
      */
-    Role selectByRoleName(@Param("roleName") String roleName);
+    JSONObject selectByRoleName(String roleName);
 
     /**
      * 查询所有角色
-     * @return              角色集合
+     * @return 角色集合
      */
     List<Role> selectALL();
-
-    /**
-     * 根据资源路径获取访问该资源需要的全部角色
-     * @param url 资源路径的url
-     * @return 访问该资源需要的角色
-     */
-    List<Role> selectByResources(@Param("url") String url);
 
     /**
      * 插入角色
@@ -39,5 +31,11 @@ public interface RoleMapper {
      * @param id    角色id
      * @return      操作状态
      */
-    Long delete(@Param("id") Long id);
+    Long delete(Long id);
+
+    /**
+     * 角色授权
+     */
+     Boolean Authorize(Long roleID,Long[] privilegeIds);
+
 }

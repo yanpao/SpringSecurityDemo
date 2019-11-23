@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.Ref_Privilege_ResourceMapper">
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Ref_Privilege_Resource">
+        <constructor>
+            <arg column="PRI_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="RES_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </constructor>
+    </resultMap>
+
+    <select id="selectByResid" resultMap="BaseResultMap">
+        select * from t_ref_privilege_resource where RES_ID=#{resid,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByPriid" resultMap="BaseResultMap">
+        select * from t_ref_privilege_resource where PRI_ID=#{priId,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Ref_Privilege_Resource">
+        insert into t_ref_privilege_resource (PRI_ID, RES_ID)
+        values (#{priId,jdbcType=BIGINT}, #{resId,jdbcType=BIGINT})
+    </insert>
+
+    <delete id="delete">
+        delete from t_ref_privilege_resource where PRI_ID = #{priId,jdbcType=BIGINT} and RES_ID = #{resId,jdbcType=BIGINT}
+    </delete>
+
+</mapper>

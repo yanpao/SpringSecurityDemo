@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.ResourceMapper">
+
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Resource">
+        <constructor>
+            <idArg column="ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <idArg column="URL" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="NAME" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="TAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, URL, NAME,TAG
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_resource
+        order by ID
+    </select>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Resource" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT currval('t_resource_id_seq')
+        </selectKey>
+        insert into t_resource (URL, name,tag)
+        values (#{url,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},#{tag,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from t_resource
+        where ID = #{id,jdbcType=VARCHAR} or pid=#{id,jdbcType=VARCHAR}
+    </delete>
+
+    <select id="selectByUrl" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_resource
+        where URL =#{url,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        select
+        t_resource.<include refid="Base_Column_List"/>
+        from t_resource
+        left join t_ref_privilege_resource
+        on t_resource.id = t_ref_privilege_resource.res_id
+        where
+        t_ref_privilege_resource.pri_id in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="update" parameterType="com.wismap.springsecuritydemo.model.Resource">
+        update t_resource
+        set NAME = #{name,jdbcType=VARCHAR},URL = #{url,jdbcType=VARCHAR},TAG = #{tag,jdbcType=VARCHAR}
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

@@ -16,30 +16,18 @@
         ID, ROLE_NAME, ROLE_NAME_LOCAL, DESCRIPTION, GEN_TIME
     </sql>
 
-    <select id="selectALL" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_role
-        <where>
-            <if test="roleName != null and roleName!='' ">
-                and  ROLE_NAME LIKE concat(concat('%',#{roleName,jdbcType=VARCHAR}),'%')
-            </if>
-            <if test="roleNameLocal != null and roleNameLocal !='' ">
-                or  ROLE_NAME_LOCAL LIKE concat(concat('%',#{roleNameLocal,jdbcType=VARCHAR}),'%')
-            </if>
-        </where>
-         order by ID limit #{limit} offset #{offset}
-    </select>
-
-    <select id="selectById" resultMap="BaseResultMap">
-        select * from t_role where ID = #{id,jdbcType=BIGINT}
-    </select>
-
     <select id="selectByRoleName" parameterType="map" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_role
         where ROLE_NAME = #{roleName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectALL" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_role
+        order by ID
     </select>
 
     <select id="selectByResources" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -52,14 +40,9 @@
         and T_ROLE.id = t_ref_privilege_role.ROLE_ID
     </select>
 
-    <delete id="delete" parameterType="java.lang.Long">
-        delete from t_role
-        where ID = #{id,jdbcType=BIGINT}
-    </delete>
-
     <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Role">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
-             SELECT currval('t_role_id_seq')
+            SELECT currval('t_role_id_seq')
         </selectKey>
         insert into t_role (ROLE_NAME, ROLE_NAME_LOCAL, DESCRIPTION,
         GEN_TIME)
@@ -67,46 +50,9 @@
         #{genTime,jdbcType=TIMESTAMP})
     </insert>
 
-    <update id="update" parameterType="com.wismap.springsecuritydemo.model.Role">
-        update t_role
-        set DESCRIPTION = #{description,jdbcType=VARCHAR},
-        GEN_TIME = #{genTime,jdbcType=TIMESTAMP},
-        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
-        ROLE_NAME_LOCAL = #{roleNameLocal,jdbcType=VARCHAR}
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from t_role
         where ID = #{id,jdbcType=BIGINT}
-    </update>
-
-    <select id="selectCount" resultType="java.lang.Long">
-        select count(*)from t_role
-        <where>
-            <if test="roleName != null and roleName!='' ">
-              and  ROLE_NAME LIKE concat(concat('%',#{roleName,jdbcType=VARCHAR}),'%')
-            </if>
-            <if test="roleNameLocal != null and roleNameLocal !='' ">
-                and  ROLE_NAME_LOCAL LIKE concat(concat('%',#{roleNameLocal,jdbcType=VARCHAR}),'%')
-            </if>
-        </where>
-    </select>
-
-    <select id="getPrivilege" resultType="java.lang.Long" parameterType="java.lang.Long">
-        select pri.id from t_privilege as pri
-        left join t_ref_privilege_role as ref on ref.pri_id = pri.id
-        left join t_role as r on r.id = ref.role_id
-        where pri.pri_type=#{pritype,jdbcType=BIGINT} and r.id=#{roleid,jdbcType=BIGINT}
-         <if test=" symbol != null and symbol !=''  ">
-             and pri.pri_symbol = #{symbol,jdbcType=BIGINT}
-         </if>
-
-    </select>
-
-    <select id="selectPosition" resultType="java.lang.Long">
-        select
-        tr.ID, tr.url, tr.name, tr.tag,tr.pid
-        from t_position tp
-        left join t_ref_privilege_position trpp on tp.id=trpp.position_id
-        left join t_ref_privilege_resource trpr on trpp.privilege_id=trpr.pri_id
-        left join t_resource tr on trpr.res_id=tr.id
-        where tp.id=#{id}
-    </select>
+    </delete>
 
 </mapper>
