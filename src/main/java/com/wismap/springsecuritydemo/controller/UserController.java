@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -38,9 +39,18 @@ public class UserController extends BaseController {
         }
     }
 
+    @RequestMapping(value = "/select",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public String SelectUserInfo(@RequestParam(value = "loginname") String loginname)
+    {
+            User user = userService.select(loginname);
+            return JSON.toJSONString(user);
+    }
+
     @RequestMapping(value = "/AssignRole",method = RequestMethod.POST,produces = "application/json")
     @ResponseBody
-    public String AssignRole(String loginname, List<Long> RoleIDs)
+    public String AssignRole(@RequestParam(value = "loginname") String loginname,
+                             @RequestParam(value = "roleids") List<Long> RoleIDs)
     {
         if (userService.AssignRole(loginname,RoleIDs))
         {
