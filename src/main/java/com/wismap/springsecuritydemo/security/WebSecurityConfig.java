@@ -1,7 +1,10 @@
 package com.wismap.springsecuritydemo.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -9,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+
+import java.util.Arrays;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -17,9 +23,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception{
         http
             .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/user").access("hasRole('ADMIN') or hasRole('USER')")
-            .anyRequest().authenticated().and()
+            .anyRequest().authenticated()
+            .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>(){
+                public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
+                    fsi.setSecurityMetadataSource(mySecurityMetadataSource());
+                    fsi.setAccessDecisionManager(new AffirmativeBased(Arrays.asList(new RoleVoter())));
+                    return fsi;
+                }
+            })
+            .and()
             .formLogin().loginPage("/login").permitAll().and()
             .logout().and()
             //.rememberMe().key("yanpao").tokenValiditySeconds(6).and()//可以记住，但是过期时间没成功
@@ -40,6 +52,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public MySecurityMetadataSource mySecurityMetadataSource()
+    {
+        return new MySecurityMetadataSource();
     }
 
     @Bean

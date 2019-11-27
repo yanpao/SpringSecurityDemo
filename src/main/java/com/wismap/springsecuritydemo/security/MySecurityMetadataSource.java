@@ -31,7 +31,7 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
         List<Role> allRoles = roleMapper.selectByResources(url);
         for(Role role : allRoles)
         {
-            SecurityConfig securityConfig=new SecurityConfig(role.getRoleName());
+            SecurityConfig securityConfig=new SecurityConfig("ROLE_"+role.getRoleName());
             attributes.add(securityConfig);
         }
         return attributes;
