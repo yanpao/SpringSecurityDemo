@@ -25,7 +25,6 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
     {
         FilterInvocation fi = (FilterInvocation) object;
         String url = fi.getRequestUrl();
-        String httpMethod = fi.getRequest().getMethod();
         List<ConfigAttribute> attributes = new ArrayList<ConfigAttribute>();
 
         List<Role> allRoles = roleMapper.selectByResources(url);

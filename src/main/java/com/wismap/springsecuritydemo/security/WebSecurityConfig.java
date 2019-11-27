@@ -28,6 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
                     fsi.setSecurityMetadataSource(mySecurityMetadataSource());
                     fsi.setAccessDecisionManager(new AffirmativeBased(Arrays.asList(new RoleVoter())));
+                    fsi.setRejectPublicInvocations(true);//为何设计要报500错误？
                     return fsi;
                 }
             })
