@@ -14,5 +14,7 @@ public interface IUserService {
 
     Integer update(User user);
 
-    Boolean AssignRole(String loginname, List<Long> RoleIDs);
+    Boolean AuthorizeRole(String loginname, List<Long> RoleIDs);
+
+    Boolean RevokeRole(String loginname, List<Long> RoleIDs);
 }

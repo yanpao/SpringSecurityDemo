@@ -22,11 +22,4 @@ public class BaseRouteController extends BaseController {
         return "login";
     }
 
-    @RequestMapping(value = "/test",method = RequestMethod.GET,produces = "application/json")
-    @ResponseBody
-    public String Insert()
-    {
-        return renderSuccess("weeeee");
-    }
-
 }

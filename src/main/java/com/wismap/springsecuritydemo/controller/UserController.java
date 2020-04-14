@@ -22,6 +22,10 @@ public class UserController extends BaseController {
     @Autowired
     IUserService userService;
 
+    public UserController(IUserService userService) {
+        this.userService = userService;
+    }
+
     @RequestMapping(value = "/info",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public String getUserInfo()
@@ -47,18 +51,33 @@ public class UserController extends BaseController {
             return JSON.toJSONString(user);
     }
 
-    @RequestMapping(value = "/AssignRole",method = RequestMethod.POST,produces = "application/json")
+    @RequestMapping(value = "/Authorize",method = RequestMethod.POST,produces = "application/json")
     @ResponseBody
-    public String AssignRole(@RequestParam(value = "loginname") String loginname,
+    public String AuthorizeRole(@RequestParam(value = "loginname") String loginname,
                              @RequestParam(value = "roleids") List<Long> RoleIDs)
     {
-        if (userService.AssignRole(loginname,RoleIDs))
+        if (userService.AuthorizeRole(loginname,RoleIDs))
         {
             return renderSuccess();
         }
         else
         {
             return renderError("授予角色失败");
+        }
+    }
+
+    @RequestMapping(value = "/Revoke",method = RequestMethod.POST,produces = "application/json")
+    @ResponseBody
+    public String RevokeRole(@RequestParam(value = "loginname") String loginname,
+                             @RequestParam(value = "roleids") List<Long> RoleIDs)
+    {
+        if (userService.RevokeRole(loginname,RoleIDs))
+        {
+            return renderSuccess();
+        }
+        else
+        {
+            return renderError("取消角色授权失败");
         }
     }
 

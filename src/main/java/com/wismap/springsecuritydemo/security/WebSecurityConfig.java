@@ -1,6 +1,7 @@
 package com.wismap.springsecuritydemo.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,6 +18,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import java.util.Arrays;
 
 @EnableWebSecurity
+@Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -28,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
                     fsi.setSecurityMetadataSource(mySecurityMetadataSource());
                     fsi.setAccessDecisionManager(new AffirmativeBased(Arrays.asList(new RoleVoter())));
-                    fsi.setRejectPublicInvocations(true);//为何设计要报500错误？
+                    fsi.setRejectPublicInvocations(false);//为何设计要报500错误？
                     return fsi;
                 }
             })
