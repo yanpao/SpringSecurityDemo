@@ -82,7 +82,7 @@
       gen_time = #{genTime,jdbcType=TIMESTAMP},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       login_count = #{loginCount,jdbcType=INTEGER},
-      status = #{status,jdbcType=SMALLINT},
+      status = #{status,jdbcType=SMALLINT,typeHandler=com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler},
       img = #{img,jdbcType=VARCHAR}
     where loginname = #{loginname,jdbcType=VARCHAR}
   </update>

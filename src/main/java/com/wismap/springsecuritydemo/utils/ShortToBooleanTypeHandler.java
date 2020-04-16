@@ -46,9 +46,9 @@ public class ShortToBooleanTypeHandler implements TypeHandler<Boolean> {
                             Boolean parameter, JdbcType jdbcType) throws SQLException {
         StringBuffer result = new StringBuffer();
         if (parameter)
-            ps.setString(i, "1");
+            ps.setInt(i, 1);
         else
-            ps.setString(i,"0");
+            ps.setInt(i,0);
     }
 
 }

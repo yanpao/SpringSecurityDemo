@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -20,6 +19,13 @@ import java.util.Arrays;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private MyUserDetailsService myUserDetailsService;
+
+    public WebSecurityConfig(MyUserDetailsService myUserDetailsService)
+    {
+        this.myUserDetailsService=myUserDetailsService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
@@ -35,7 +41,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 }
             })
             .and()
-            .formLogin().loginPage("/login").permitAll().and()
+            .formLogin().loginPage("/login").permitAll()
+                .successHandler(mySuccessHandler())
+                .failureHandler(myFailureHandler())
+                .and()
             .logout().and()
             //.rememberMe().key("yanpao").tokenValiditySeconds(6).and()//可以记住，但是过期时间没成功
             .httpBasic().and()
@@ -48,12 +57,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
+    /**
+     * 5.0新出的UserDetailsPasswordService接口，下次试一下
+     */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider()
     {
         DaoAuthenticationProvider daoAuthenticationProvider=new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        daoAuthenticationProvider.setUserDetailsService(myUserDetailsService);
         return daoAuthenticationProvider;
     }
 
@@ -64,13 +76,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsService userDetailsService()
-    {
-        return new MyUserDetailsService();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public MySuccessHandler mySuccessHandler()
+    {
+        return new MySuccessHandler();
+    }
+
+    @Bean
+    public MyFailureHandler myFailureHandler()
+    {
+        return new MyFailureHandler();
     }
 }
