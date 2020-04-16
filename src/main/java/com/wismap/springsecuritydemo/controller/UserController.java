@@ -8,14 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "/user")
 public class UserController extends BaseController {
 
@@ -27,7 +24,6 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/info",method = RequestMethod.GET,produces = "application/json")
-    @ResponseBody
     public String getUserInfo()
     {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -44,7 +40,6 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/select",method = RequestMethod.GET,produces = "application/json")
-    @ResponseBody
     public String SelectUserInfo(@RequestParam(value = "loginname") String loginname)
     {
             User user = userService.select(loginname);
@@ -52,7 +47,6 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/Authorize",method = RequestMethod.POST,produces = "application/json")
-    @ResponseBody
     public String AuthorizeRole(@RequestParam(value = "loginname") String loginname,
                              @RequestParam(value = "roleids") List<Long> RoleIDs)
     {
@@ -67,7 +61,6 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/Revoke",method = RequestMethod.POST,produces = "application/json")
-    @ResponseBody
     public String RevokeRole(@RequestParam(value = "loginname") String loginname,
                              @RequestParam(value = "roleids") List<Long> RoleIDs)
     {
