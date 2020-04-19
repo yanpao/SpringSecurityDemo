@@ -12,7 +12,7 @@ public interface IUserService {
 
     User select(String loginname);
 
-    Integer update(User user);
+    User update(User user);
 
     Boolean AuthorizeRole(String loginname, List<Long> RoleIDs);
 

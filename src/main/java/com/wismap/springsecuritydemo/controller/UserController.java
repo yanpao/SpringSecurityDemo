@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.wismap.springsecuritydemo.model.User;
 import com.wismap.springsecuritydemo.service.IUserService;
 import com.wismap.springsecuritydemo.utils.BaseController;
+import com.wismap.springsecuritydemo.utils.HttpResult;
+import com.wismap.springsecuritydemo.utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,6 +46,26 @@ public class UserController extends BaseController {
     {
             User user = userService.select(loginname);
             return JSON.toJSONString(user);
+    }
+
+    @PostMapping(value = "update", produces = "application/json")
+    public String UpdateUser(@RequestBody User user)
+    {
+        User result = userService.update(user);
+        if (result!=null) {
+            return JSON.toJSONString(result);
+        }
+        else
+        {
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).toString();
+        }
+    }
+
+    @PostMapping(value = "delete",produces = "application/json")
+    public String DeleteUser(@RequestParam(value = "loginname") String loginname)
+    {
+        Integer result = userService.delete(loginname);
+        if ()
     }
 
     @RequestMapping(value = "/Authorize",method = RequestMethod.POST,produces = "application/json")

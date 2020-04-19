@@ -5,7 +5,11 @@ import com.wismap.springsecuritydemo.mapper.UserMapper;
 import com.wismap.springsecuritydemo.model.Ref_User_Role;
 import com.wismap.springsecuritydemo.model.User;
 import com.wismap.springsecuritydemo.service.IUserService;
+import com.wismap.springsecuritydemo.utils.HttpResult;
+import com.wismap.springsecuritydemo.utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +28,7 @@ public class UserServiceImpl implements IUserService {
         return userMapper.insert(user);
     }
 
+    @Cacheable("UserInfo")
     public Integer delete(String loginname)
     {
         //delete user
@@ -35,14 +40,22 @@ public class UserServiceImpl implements IUserService {
         return usercount;
     }
 
+    @Cacheable("UserInfo")
     public User select(String loginname)
     {
         return userMapper.select(loginname);
     }
 
-    public Integer update(User user)
+    @CachePut(cacheNames = "UserInfo",key = "#user.loginname")
+    public User update(User user)
     {
-        return userMapper.update(user);
+        if (userMapper.update(user)>0) {
+            return userMapper.select(user.getLoginname());
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public Boolean AuthorizeRole(String loginname, List<Long> RoleIDs)
