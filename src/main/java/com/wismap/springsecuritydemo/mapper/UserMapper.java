@@ -1,14 +1,18 @@
 package com.wismap.springsecuritydemo.mapper;
 
 import com.wismap.springsecuritydemo.model.User;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+import java.util.List;
+
+@Repository
 public interface UserMapper {
 
     int delete(String loginname);
 
-    int insert(User record);
+    Integer insert(User record);
+
+    List<User> selectAll(Long limit,Long offset);
 
     User select(String loginname);
 

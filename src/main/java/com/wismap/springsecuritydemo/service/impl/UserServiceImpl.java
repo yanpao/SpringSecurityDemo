@@ -5,9 +5,7 @@ import com.wismap.springsecuritydemo.mapper.UserMapper;
 import com.wismap.springsecuritydemo.model.Ref_User_Role;
 import com.wismap.springsecuritydemo.model.User;
 import com.wismap.springsecuritydemo.service.IUserService;
-import com.wismap.springsecuritydemo.utils.HttpResult;
-import com.wismap.springsecuritydemo.utils.ResultCodeEnum;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -17,25 +15,35 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    @Autowired
     private UserMapper userMapper;
-
-    @Autowired
     private Ref_User_RoleMapper ref_user_roleMapper;
 
-    public Integer insert(User user)
+    public UserServiceImpl(UserMapper userMapper,Ref_User_RoleMapper ref_user_roleMapper)
     {
-        return userMapper.insert(user);
+        this.userMapper=userMapper;
+        this.ref_user_roleMapper=ref_user_roleMapper;
     }
 
-    @Cacheable("UserInfo")
-    public Integer delete(String loginname)
+    @CacheEvict(cacheNames ="UserAll",allEntries=true)
+    public User insert(User user)
     {
+        Integer result = userMapper.insert(user);
+        if (result>0)
+            return userMapper.select(user.getLoginname());
+        else
+            return null;
+    }
+
+    @CacheEvict("UserInfo")
+    public Integer delete(String loginname) throws Exception
+    {
+        User user = userMapper.select(loginname);
+        if (user==null)
+            throw new Exception("用户不存在！");
         //delete user
         Integer usercount=userMapper.delete(loginname);
         if (usercount>0) {//delete related roles
-            Integer userid = userMapper.select(loginname).getId();
-            ref_user_roleMapper.deleteByUserId(userid.longValue());
+            ref_user_roleMapper.deleteByUserId(user.getId().longValue());
         }
         return usercount;
     }
@@ -43,7 +51,27 @@ public class UserServiceImpl implements IUserService {
     @Cacheable("UserInfo")
     public User select(String loginname)
     {
-        return userMapper.select(loginname);
+        User user = userMapper.select(loginname);
+        if (user!=null)
+        {
+            user.setPassword(null);
+            return user;
+        }
+        else
+            return null;
+    }
+
+    @Cacheable("UserAll")
+    public List<User> selectAll(Long limit,Long offset)
+    {
+        List<User> all = userMapper.selectAll(limit,offset);
+        if (all.size()>0)
+        {
+            for(User user : all)
+                user.setPassword(null);
+        }
+
+        return all;
     }
 
     @CachePut(cacheNames = "UserInfo",key = "#user.loginname")

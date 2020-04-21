@@ -6,11 +6,13 @@ import java.util.List;
 
 public interface IUserService {
 
-    Integer insert(User user);
+    User insert(User user);
 
-    Integer delete(String loginname);
+    Integer delete(String loginname)throws Exception;
 
     User select(String loginname);
+
+    List<User> selectAll(Long limit,Long offset);
 
     User update(User user);
 

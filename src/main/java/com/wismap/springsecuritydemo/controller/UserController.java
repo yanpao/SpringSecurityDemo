@@ -1,6 +1,7 @@
 package com.wismap.springsecuritydemo.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.wismap.springsecuritydemo.model.User;
 import com.wismap.springsecuritydemo.service.IUserService;
 import com.wismap.springsecuritydemo.utils.BaseController;
@@ -41,14 +42,22 @@ public class UserController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/select",method = RequestMethod.GET,produces = "application/json")
+    @GetMapping(value = "/select",produces = "application/json")
     public String SelectUserInfo(@RequestParam(value = "loginname") String loginname)
     {
             User user = userService.select(loginname);
             return JSON.toJSONString(user);
     }
 
-    @PostMapping(value = "update", produces = "application/json")
+    @GetMapping(value = "/selectall",produces = "application/json")
+    public String SelectAllUser(@RequestParam(value = "limit") Long limit,
+                                @RequestParam(value = "offset") Long offset)
+    {
+        List<User> allUser = userService.selectAll(limit,offset);
+        return JSONArray.toJSONString(allUser);
+    }
+
+    @PostMapping(value = "/update", produces = "application/json")
     public String UpdateUser(@RequestBody User user)
     {
         User result = userService.update(user);
@@ -61,11 +70,34 @@ public class UserController extends BaseController {
         }
     }
 
-    @PostMapping(value = "delete",produces = "application/json")
+    @PostMapping(value = "/insert", produces = "application/json")
+    public String InsertUser(@RequestBody User user)
+    {
+        User result = userService.insert(user);
+        if (result!=null) {
+            return JSON.toJSONString(result);
+        }
+        else
+        {
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).toString();
+        }
+    }
+
+    @PostMapping(value = "/delete",produces = "application/json")
     public String DeleteUser(@RequestParam(value = "loginname") String loginname)
     {
-        Integer result = userService.delete(loginname);
-        if ()
+        try {
+            Integer result = userService.delete(loginname);
+            if (result>0)
+                return renderSuccess();
+            else
+                return renderError("删除用户失败");
+        }
+        catch (Exception ex)
+        {
+            return renderError(ex.getMessage());
+        }
+
     }
 
     @RequestMapping(value = "/Authorize",method = RequestMethod.POST,produces = "application/json")

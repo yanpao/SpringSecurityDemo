@@ -24,34 +24,39 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, loginname, password, localusername, mobile, email, gen_time, last_login_time, 
-    login_count, status, img
-  </sql>
-
-  <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT
-        t.ID,
-        t.LOGINNAME,
-        t.PASSWORD,
-        t.LOCALUSERNAME,
-        t.MOBILE,
-        t.EMAIL,
-        t.GEN_TIME,
-        t.LAST_LOGIN_TIME,
-        t.LOGIN_COUNT,
-        t.STATUS,
-        t.IMG,
+      SELECT
+        u.ID,
+        u.LOGINNAME,
+        u.PASSWORD,
+        u.LOCALUSERNAME,
+        u.MOBILE,
+        u.EMAIL,
+        u.GEN_TIME,
+        u.LAST_LOGIN_TIME,
+        u.LOGIN_COUNT,
+        u.STATUS,
+        u.IMG,
         o.ID as RID,
         o.ROLE_NAME ,
         o.ROLE_NAME_LOCAL ,
         o.DESCRIPTION ,
         o.GEN_TIME
         FROM
-        t_user t
-        LEFT JOIN T_REF_USER_ROLE r ON t.id = r.USER_ID
+        t_user u
+        LEFT JOIN T_REF_USER_ROLE r ON u.id = r.USER_ID
         LEFT JOIN T_ROLE o ON r.ROLE_ID = o.id
-        where t.loginname = #{loginname,jdbcType=VARCHAR}
+  </sql>
+
+  <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
+      <include refid="Base_Column_List"/>
+        where u.loginname = #{loginname,jdbcType=VARCHAR}
   </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        <include refid="Base_Column_List"/>
+        order by u.id desc
+        limit #{limit,jdbcType=BIGINT } offset #{offset,jdbcType=BIGINT }
+    </select>
 
   <delete id="delete" parameterType="java.lang.Integer">
     delete from t_user
@@ -59,17 +64,17 @@
   </delete>
 
   <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.User">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into t_user (loginname, password, localusername, 
       mobile, email, gen_time, 
       last_login_time, login_count, status, 
       img)
     values (#{loginname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{localusername,jdbcType=VARCHAR}, 
       #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{genTime,jdbcType=TIMESTAMP}, 
-      #{lastLoginTime,jdbcType=TIMESTAMP}, #{loginCount,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT}, 
+      #{lastLoginTime,jdbcType=TIMESTAMP}, #{loginCount,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT,typeHandler=com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler},
       #{img,jdbcType=VARCHAR})
+      <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+          SELECT currval('t_user_id_seq')
+      </selectKey>
   </insert>
 
   <update id="update" parameterType="com.wismap.springsecuritydemo.model.User">
