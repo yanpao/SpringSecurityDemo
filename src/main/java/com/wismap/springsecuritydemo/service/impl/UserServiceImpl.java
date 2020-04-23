@@ -1,7 +1,9 @@
 package com.wismap.springsecuritydemo.service.impl;
 
+import com.wismap.springsecuritydemo.mapper.Ref_User_PositionMapper;
 import com.wismap.springsecuritydemo.mapper.Ref_User_RoleMapper;
 import com.wismap.springsecuritydemo.mapper.UserMapper;
+import com.wismap.springsecuritydemo.model.Ref_User_Position;
 import com.wismap.springsecuritydemo.model.Ref_User_Role;
 import com.wismap.springsecuritydemo.model.User;
 import com.wismap.springsecuritydemo.service.IUserService;
@@ -17,11 +19,15 @@ public class UserServiceImpl implements IUserService {
 
     private UserMapper userMapper;
     private Ref_User_RoleMapper ref_user_roleMapper;
+    private Ref_User_PositionMapper ref_user_positionMapper;
 
-    public UserServiceImpl(UserMapper userMapper,Ref_User_RoleMapper ref_user_roleMapper)
+    public UserServiceImpl(UserMapper userMapper,
+                           Ref_User_RoleMapper ref_user_roleMapper,
+                           Ref_User_PositionMapper ref_user_positionMapper)
     {
         this.userMapper=userMapper;
         this.ref_user_roleMapper=ref_user_roleMapper;
+        this.ref_user_positionMapper=ref_user_positionMapper;
     }
 
     @CacheEvict(cacheNames ="UserAll",allEntries=true)
@@ -84,6 +90,15 @@ public class UserServiceImpl implements IUserService {
         {
             return null;
         }
+    }
+
+    public Boolean GrantPosition(Integer Userid,Integer Positon)
+    {
+        Ref_User_Position ref_user_position=new Ref_User_Position(Userid,Positon);
+        if(ref_user_positionMapper.insert(ref_user_position)>0)
+            return true;
+        else
+            return false;
     }
 
     public Boolean AuthorizeRole(String loginname, List<Long> RoleIDs)

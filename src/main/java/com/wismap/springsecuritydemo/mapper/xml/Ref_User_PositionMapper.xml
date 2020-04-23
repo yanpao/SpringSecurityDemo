@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wismap.springsecuritydemo.mapper.Ref_User_PositionMapper">
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Ref_User_Position">
+        <constructor>
+            <idArg column="USER_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <idArg column="POSITION_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </constructor>
+    </resultMap>
+
+    <select id="select" parameterType="map" resultMap="BaseResultMap">
+        select * from t_ref_user_position
+        where USER_ID = #{userid,jdbcType=BIGINT}
+        and POSITION_ID = #{positionid,jdbcType=BIGINT}
+    </select>
+
+    <delete id="delete" parameterType="map">
+        delete from t_ref_user_position
+        where USER_ID = #{userid,jdbcType=BIGINT}
+        and POSITION_ID = #{positionid,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByUserId" parameterType="map">
+        delete from t_ref_user_position
+        where USER_ID = #{userid,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByPositionId" parameterType="map">
+        delete from t_ref_user_position
+        where POSITION_ID = #{positionid,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Ref_User_Position">
+        insert into t_ref_user_position (USER_ID, POSITION_ID)
+        values (#{userId,jdbcType=BIGINT}, #{positionId,jdbcType=BIGINT})
+    </insert>
+
+</mapper>

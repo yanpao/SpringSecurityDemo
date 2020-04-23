@@ -22,21 +22,21 @@
             <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.wismap.springsecuritydemo.model" targetProject="/home/lihanzhang/文档/MyBatisGenerator">
+        <javaModelGenerator targetPackage="com.wismap.springsecuritydemo.model" targetProject="E:\mybatis">
             <property name="constructorBased" value="true" />
             <property name="enableSuibPackages" value="true" />
             <property name="trimStrngs" value="true" />
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="mapper"  targetProject="/home/lihanzhang/文档/MyBatisGenerator">
+        <sqlMapGenerator targetPackage="mapper"  targetProject="E:\mybatis">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.wismap.springsecuritydemo.mapper"  targetProject="/home/lihanzhang/文档/MyBatisGenerator">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.wismap.springsecuritydemo.mapper"  targetProject="E:\mybatis">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <table tableName="t_user" domainObjectName="User">
+        <table tableName="t_ref_user_position" domainObjectName="Ref_User_Position">
             <generatedKey column="id" sqlStatement="Mysql" identity="true" />
         </table>
 

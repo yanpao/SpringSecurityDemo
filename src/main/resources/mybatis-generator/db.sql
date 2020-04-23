@@ -26,6 +26,29 @@ CREATE TABLE t_role (
 )
 ;
 
+CREATE TABLE t_department (
+  ID SERIAL primary key NOT NULL,
+  DEPARTMENT_NAME varchar(32)  NOT NULL UNIQUE,
+  DESCRIPTION varchar(255) ,
+  PID int4 not null
+)
+;
+
+CREATE TABLE t_position (
+  ID SERIAL primary key NOT NULL,
+  POSITION_NAME varchar(32)  NOT NULL,
+  DESCRIPTION varchar(255) ,
+  DEPARTMENT_ID int4 not null,
+  PID int4 not null
+)
+;
+
+CREATE TABLE t_ref_user_position (
+  USER_ID int4 NOT NULL,
+  POSITION_ID int4 NOT NULL
+)
+;
+
 CREATE TABLE t_ref_user_role (
   USER_ID int4 NOT NULL,
   ROLE_ID int4 NOT NULL

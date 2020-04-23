@@ -16,6 +16,8 @@ public interface IUserService {
 
     User update(User user);
 
+    Boolean GrantPosition(Integer Userid,Integer Positon);
+
     Boolean AuthorizeRole(String loginname, List<Long> RoleIDs);
 
     Boolean RevokeRole(String loginname, List<Long> RoleIDs);

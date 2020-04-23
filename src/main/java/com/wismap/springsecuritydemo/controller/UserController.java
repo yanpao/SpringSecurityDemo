@@ -7,7 +7,6 @@ import com.wismap.springsecuritydemo.service.IUserService;
 import com.wismap.springsecuritydemo.utils.BaseController;
 import com.wismap.springsecuritydemo.utils.HttpResult;
 import com.wismap.springsecuritydemo.utils.ResultCodeEnum;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/user",produces = "application/json")
 public class UserController extends BaseController {
 
-    @Autowired
-    IUserService userService;
+    private IUserService userService;
 
     public UserController(IUserService userService) {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/info",method = RequestMethod.GET,produces = "application/json")
+    @GetMapping(value = "/info")
     public String getUserInfo()
     {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -41,14 +39,14 @@ public class UserController extends BaseController {
         }
     }
 
-    @GetMapping(value = "/select",produces = "application/json")
+    @GetMapping(value = "/select")
     public String SelectUserInfo(@RequestParam(value = "loginname") String loginname)
     {
             User user = userService.select(loginname);
             return JSON.toJSONString(user);
     }
 
-    @GetMapping(value = "/selectall",produces = "application/json")
+    @GetMapping(value = "/selectall")
     public String SelectAllUser(@RequestParam(value = "limit") Long limit,
                                 @RequestParam(value = "offset") Long offset)
     {
@@ -56,7 +54,7 @@ public class UserController extends BaseController {
         return JSONArray.toJSONString(allUser);
     }
 
-    @PostMapping(value = "/update", produces = "application/json")
+    @PostMapping(value = "/update")
     public String UpdateUser(@RequestBody User user)
     {
         User result = userService.update(user);
@@ -69,7 +67,7 @@ public class UserController extends BaseController {
         }
     }
 
-    @PostMapping(value = "/insert", produces = "application/json")
+    @PostMapping(value = "/insert")
     public String InsertUser(@RequestBody User user)
     {
         User result = userService.insert(user);
@@ -82,7 +80,18 @@ public class UserController extends BaseController {
         }
     }
 
-    @PostMapping(value = "/delete",produces = "application/json")
+    @PostMapping("/grant")
+    public String GrantPosition(Integer userid,Integer positonid)
+    {
+        if (userService.GrantPosition(userid,positonid))
+        {
+            return HttpResult.success("授予职位成功").toString();
+        }
+        else
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).toString();
+    }
+
+    @PostMapping(value = "/delete")
     public String DeleteUser(@RequestParam(value = "loginname") String loginname)
     {
         try {
@@ -96,10 +105,11 @@ public class UserController extends BaseController {
         {
             return renderError(ex.getMessage());
         }
-
     }
 
-    @RequestMapping(value = "/Authorize",method = RequestMethod.POST,produces = "application/json")
+
+
+    @PostMapping(value = "/Authorize")
     public String AuthorizeRole(@RequestParam(value = "loginname") String loginname,
                              @RequestParam(value = "roleids") List<Long> RoleIDs)
     {
@@ -113,7 +123,7 @@ public class UserController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/Revoke",method = RequestMethod.POST,produces = "application/json")
+    @PostMapping(value = "/Revoke")
     public String RevokeRole(@RequestParam(value = "loginname") String loginname,
                              @RequestParam(value = "roleids") List<Long> RoleIDs)
     {
