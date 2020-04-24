@@ -14,6 +14,13 @@
       <result column="login_count" property="loginCount" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <result column="status" property="status" javaType="java.lang.Boolean" typeHandler="com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler" />
       <result column="img" property="img" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <collection property="positionList" ofType="com.wismap.springsecuritydemo.model.Position" javaType="List">
+          <result column="pos_id" property="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+          <result column="position_name" property="positionName" javaType="java.lang.String" jdbcType="VARCHAR" />
+          <result column="pos_description" property="description" javaType="java.lang.String" jdbcType="VARCHAR" />
+          <result column="department_id" property="departmentId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+          <result column="department_name" property="departmentName" javaType="java.lang.String" jdbcType="VARCHAR" />
+      </collection>
       <collection property="rolesList" ofType="com.wismap.springsecuritydemo.model.Role" javaType="List">
         <result column="RID" property="id" jdbcType="BIGINT"/>
         <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR"/>
@@ -40,11 +47,20 @@
         o.ROLE_NAME ,
         o.ROLE_NAME_LOCAL ,
         o.DESCRIPTION ,
-        o.GEN_TIME
+        o.GEN_TIME,
+        pos.id as pos_id,
+        pos.position_name as position_name,
+        pos.description as pos_description,
+        pos.department_id as department_id,
+        dep.department_name as department_name,
+        pos.pid as pid
         FROM
         t_user u
         LEFT JOIN T_REF_USER_ROLE r ON u.id = r.USER_ID
         LEFT JOIN T_ROLE o ON r.ROLE_ID = o.id
+        LEFT JOIN t_ref_user_position refup on u.id=refup.user_id
+        LEFT JOIN t_position pos on refup.position_id=pos.id
+        left join t_department dep on pos.department_id=dep.id
   </sql>
 
   <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">

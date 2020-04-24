@@ -1,6 +1,8 @@
 package com.wismap.springsecuritydemo.model;
 
-public class Resource {
+import java.io.Serializable;
+
+public class Resource implements Serializable {
     private Long id;
 
     private String url;

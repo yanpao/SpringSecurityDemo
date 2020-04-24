@@ -32,6 +32,16 @@ public class User implements UserDetails {
 
     private String img;
 
+    public List<Position> getPositionList() {
+        return positionList;
+    }
+
+    public void setPositionList(List<Position> positionList) {
+        this.positionList = positionList;
+    }
+
+    private List<Position> positionList;
+
     private List<Role> rolesList;
 
     public User(Integer id, String loginname, String password, String localusername, String mobile, String email, Date genTime, Date lastLoginTime, Integer loginCount, Boolean status, String img) {

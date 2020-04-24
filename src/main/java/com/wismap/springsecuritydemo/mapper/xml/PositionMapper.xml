@@ -16,12 +16,14 @@
       <result column="position_name" property="positionName" javaType="java.lang.String" jdbcType="VARCHAR" />
       <result column="description" property="description" javaType="java.lang.String" jdbcType="VARCHAR" />
       <result column="department_id" property="departmentId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="department_name" property="departmentName" javaType="java.lang.String" jdbcType="VARCHAR" />
       <result column="pid" property="pid" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <collection property="Children" ofType="com.wismap.springsecuritydemo.model.Position" javaType="List">
         <id column="idc" property="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
         <result column="position_namec" property="positionName" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result column="descriptionc" property="description" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result column="department_idc" property="departmentId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+        <result column="department_namec" property="departmentName" javaType="java.lang.String" jdbcType="VARCHAR" />
         <result column="pidc" property="pid" javaType="java.lang.Integer" jdbcType="INTEGER" />
       </collection>
   </resultMap>
@@ -36,14 +38,18 @@
     top.position_name as position_name,
     top.description as description,
     top.department_id as department_id,
+    dep.department_name as department_name,
     top.pid as pid,
     child.id as idc,
     child.position_name as position_namec,
     child.description as descriptionc,
     child.department_id as department_idc,
+    dep2.department_name as department_namec,
     child.pid as pidc
     from t_position as top
     left join t_position as child on child.pid=top.id
+    left join t_department as dep on top.department_id=dep.id
+    left join t_department as dep2 on child.department_id=dep2.id
   </sql>
 
   <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMapTree">

@@ -12,4 +12,6 @@ public interface IPositionService {
 
     int update(Position record);
 
+    Boolean isLeader(Integer id);
+
 }

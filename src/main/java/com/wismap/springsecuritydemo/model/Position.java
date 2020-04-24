@@ -1,8 +1,11 @@
 package com.wismap.springsecuritydemo.model;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class Position {
+public class Position implements Serializable {
     private Integer id;
 
     private String positionName;
@@ -10,6 +13,8 @@ public class Position {
     private String description;
 
     private Integer departmentId;
+
+    private String departmentName;
 
     private Integer pid;
 
@@ -57,6 +62,14 @@ public class Position {
 
     public void setDepartmentId(Integer departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     public Integer getPid() {

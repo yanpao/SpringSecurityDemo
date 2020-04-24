@@ -2,7 +2,10 @@ package com.wismap.springsecuritydemo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.wismap.springsecuritydemo.model.Position;
 import com.wismap.springsecuritydemo.model.User;
+import com.wismap.springsecuritydemo.service.IPositionService;
 import com.wismap.springsecuritydemo.service.IUserService;
 import com.wismap.springsecuritydemo.utils.BaseController;
 import com.wismap.springsecuritydemo.utils.HttpResult;
@@ -18,9 +21,12 @@ import java.util.List;
 public class UserController extends BaseController {
 
     private IUserService userService;
+    private IPositionService positionService;
 
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService,
+                          IPositionService positionService) {
         this.userService = userService;
+        this.positionService=positionService;
     }
 
     @GetMapping(value = "/info")
@@ -89,6 +95,23 @@ public class UserController extends BaseController {
         }
         else
             return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).toString();
+    }
+
+    @GetMapping("/isleader")
+    public String IsLeader(String loginname)
+    {
+        User user = userService.select(loginname);
+        JSONArray jsonArray = new JSONArray();
+        for(Position position:user.getPositionList())
+        {
+            JSONObject json=new JSONObject();
+            json.put(position.getDepartmentName(), positionService.isLeader(position.getId()));
+            jsonArray.add(json);
+        }
+        if (jsonArray.size()>0)
+            return jsonArray.toString();
+        else
+            return "此人没有职位";
     }
 
     @PostMapping(value = "/delete")
