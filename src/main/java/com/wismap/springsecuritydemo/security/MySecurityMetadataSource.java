@@ -25,12 +25,19 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
     {
         FilterInvocation fi = (FilterInvocation) object;
         String url = fi.getRequestUrl();
+        if (url.contains("?"))
+            url = url.substring(0,url.indexOf("?"));
         List<ConfigAttribute> attributes = new ArrayList<ConfigAttribute>();
 
         List<Role> allRoles = roleMapper.selectByResources(url);
         for(Role role : allRoles)
         {
             SecurityConfig securityConfig=new SecurityConfig("ROLE_"+role.getRoleName());
+            attributes.add(securityConfig);
+        }
+        if (attributes.size()==0)
+        {
+            SecurityConfig securityConfig=new SecurityConfig("ROLE_6700D5A17CF66CA05B3074D6A07E141D");
             attributes.add(securityConfig);
         }
         return attributes;
