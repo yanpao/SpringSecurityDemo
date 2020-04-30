@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 }
             })
             .and()
-            .formLogin().loginPage("/login").permitAll()
+            .formLogin().loginProcessingUrl("/login").permitAll()
                 .successHandler(mySuccessHandler())
                 .failureHandler(myFailureHandler())
                 .and()
