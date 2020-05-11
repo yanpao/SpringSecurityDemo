@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -41,14 +43,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 }
             })
             .and()
-            .formLogin().loginPage("/login").permitAll()
+            .formLogin().loginProcessingUrl("/login").permitAll()
                 .successHandler(mySuccessHandler())
                 .failureHandler(myFailureHandler())
                 .and()
             .logout().and()
             //.rememberMe().key("yanpao").tokenValiditySeconds(6).and()//可以记住，但是过期时间没成功
-            .httpBasic().and()
-            .csrf().disable();
+            .httpBasic()
+                .and()
+            .csrf().disable().
+            sessionManagement()
+                .invalidSessionStrategy(myInvalidSessionStrategy())
+                .maximumSessions(1)
+                .expiredSessionStrategy(mySessionInformationExpiredStrategy())
+                .maxSessionsPreventsLogin(true)
+                .sessionRegistry(sessionRegistry());
     }
 
     @Override
@@ -57,8 +66,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    @Bean
+    public MySessionInformationExpiredStrategy mySessionInformationExpiredStrategy()
+    {
+        return new MySessionInformationExpiredStrategy();
+    }
+
+    @Bean
+    public MyInvalidSessionStrategy myInvalidSessionStrategy(){
+        return new MyInvalidSessionStrategy();
+    }
+
     /**
-     * 5.0新出的UserDetailsPasswordService接口，下次试一下
+     * 5.0新出的UserDetailsPasswordService接口，下次试一下 #Q
      */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider()

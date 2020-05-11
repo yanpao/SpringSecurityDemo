@@ -7,14 +7,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface Ref_User_PositionMapper {
 
-    Ref_User_Position select(@Param("userid") Long userid, @Param("positionid") Long positionid);
+    Ref_User_Position select(@Param("userid") Integer userid, @Param("positionid") Integer positionid);
 
-    int delete(@Param("userid") Long userid, @Param("positionid") Long positionid);
+    int delete(@Param("userid") Integer userid, @Param("positionid") Integer positionid);
 
     int insert(Ref_User_Position record);
 
-    Boolean deleteByPositionId(@Param("positionid") Long positionid);
+    Boolean deleteByPositionId(@Param("positionid") Integer positionid);
 
-    Boolean deleteByUserId(@Param("userid") Long userid);
+    Boolean deleteByUserId(@Param("userid") Integer userid);
 
 }

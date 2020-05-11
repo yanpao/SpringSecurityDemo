@@ -31,12 +31,22 @@
     </delete>
 
     <select id="selectPriByRoleid" resultType="Long">
-        select PRI_ID from t_ref_privilege_role where ROLE_ID = #{roleId,jdbcType=BIGINT}
+        select ref.PRI_ID
+        from t_ref_privilege_role ref
+        left join t_privilege pri on ref.pri_id = pri.id
+        where ref.ROLE_ID = #{roleId,jdbcType=BIGINT}
+        <if test="pritype != null and  pritype!= ''">
+            and pri.pri_type=#{pritype,jdbcType=BIGINT}
+        </if>
+
     </select>
 
     <select id="selectRoleidBypri" resultType="Long">
         select ROLE_ID from t_ref_privilege_role where PRI_ID = #{priId,jdbcType=BIGINT}
     </select>
 
-
+    <select id="select" resultMap="BaseResultMap">
+        select ROLE_ID, PRI_ID from t_ref_privilege_role where PRI_ID = #{priId,jdbcType=BIGINT} and ROLE_ID = #{roleId,jdbcType=BIGINT}
+    </select>
+    
 </mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.PACMapper">
+
+  <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.PAC">
+    <constructor>
+      <idArg column="pac" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="parent" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+
+  <resultMap id="BaseResultMapTree" type="com.wismap.springsecuritydemo.model.PAC">
+      <id column="pac" property="pac" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="name" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="parent" property="parent" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <collection property="Children" ofType="com.wismap.springsecuritydemo.model.PAC" javaType="List">
+      <id column="pacc" property="pac" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="namec" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="parentc" property="parent" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    pac, name, parent
+  </sql>
+
+  <sql id="Base_Column_List_Tree">
+    select
+    top.pac as pac,
+    top.name as name,
+    top.parent as parent,
+    child.pac as pacc,
+    child.name as namec,
+    child.parent as parentc
+    from t_pac as top
+    left join t_pac as child on child.parent = top.pac
+  </sql>
+
+  <select id="selectByPAC" parameterType="java.lang.String" resultMap="BaseResultMapTree">
+    <include refid="Base_Column_List_Tree" />
+    where top.pac = #{pac,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMapTree">
+    <include refid="Base_Column_List_Tree" />
+    where top.name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+  </select>
+
+  <delete id="delete" parameterType="java.lang.String">
+    delete from t_pac
+    where pac = #{pac,jdbcType=VARCHAR}
+    or parent=#{pac,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.PAC">
+    insert into t_pac (pac, name, parent)
+    values (#{pac,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{parent,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="com.wismap.springsecuritydemo.model.PAC">
+    update t_pac
+    set
+      pac = #{pac,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      parent = #{parent,jdbcType=VARCHAR}
+    where pac = #{pac,jdbcType=VARCHAR}
+  </update>
+
+  <select id="SelectLevel" parameterType="java.lang.String" resultType="java.lang.Integer">
+    with RECURSIVE r as (
+      SELECT * from t_pac where pac=#{pac,jdbcType=VARCHAR}
+      UNION all
+      select t_pac.* from t_pac,r where t_pac.pac=r.parent
+      )
+      select count(*) from r
+  </select>
+
+</mapper>

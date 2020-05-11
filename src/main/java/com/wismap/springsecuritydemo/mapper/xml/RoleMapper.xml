@@ -16,18 +16,32 @@
         ID, ROLE_NAME, ROLE_NAME_LOCAL, DESCRIPTION, GEN_TIME
     </sql>
 
-    <select id="selectByRoleName" parameterType="map" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_role
-        where ROLE_NAME = #{roleName,jdbcType=VARCHAR}
-    </select>
-
     <select id="selectALL" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_role
-        order by ID
+        <where>
+            <if test="roleName != null and roleName!='' ">
+                and  ROLE_NAME LIKE concat(concat('%',#{roleName,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="roleNameLocal != null and roleNameLocal !='' ">
+                or  ROLE_NAME_LOCAL LIKE concat(concat('%',#{roleNameLocal,jdbcType=VARCHAR}),'%')
+            </if>
+        </where>
+        order by ID desc
+        limit #{limit,jdbcType=BIGINT } offset #{offset,jdbcType=BIGINT }
+    </select>
+
+    <select id="selectAllCount" resultType="java.lang.Integer">
+        select count(*) from t_role
+        <where>
+            <if test="roleName != null and roleName!='' ">
+                and  ROLE_NAME LIKE concat(concat('%',#{roleName,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="roleNameLocal != null and roleNameLocal !='' ">
+                or  ROLE_NAME_LOCAL LIKE concat(concat('%',#{roleNameLocal,jdbcType=VARCHAR}),'%')
+            </if>
+        </where>
     </select>
 
     <select id="selectByResources" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -41,14 +55,22 @@
     </select>
 
     <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Role">
+        insert into t_role (ROLE_NAME, ROLE_NAME_LOCAL, DESCRIPTION,GEN_TIME)
+        values (#{roleName,jdbcType=VARCHAR}, #{roleNameLocal,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},#{genTime,jdbcType=TIMESTAMP})
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
             SELECT currval('t_role_id_seq')
         </selectKey>
-        insert into t_role (ROLE_NAME, ROLE_NAME_LOCAL, DESCRIPTION,
-        GEN_TIME)
-        values (#{roleName,jdbcType=VARCHAR}, #{roleNameLocal,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-        #{genTime,jdbcType=TIMESTAMP})
     </insert>
+
+    <update id="update" parameterType="com.wismap.springsecuritydemo.model.Role">
+        update t_role
+        set
+        ROLE_NAME=#{roleName,jdbcType=VARCHAR},
+        ROLE_NAME_LOCAL=#{roleNameLocal,jdbcType=VARCHAR},
+        DESCRIPTION=#{description,jdbcType=VARCHAR},
+        GEN_TIME=#{genTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
     <delete id="delete" parameterType="java.lang.Long">
         delete from t_role

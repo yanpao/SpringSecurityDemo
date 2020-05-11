@@ -1,6 +1,7 @@
 package com.wismap.springsecuritydemo.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Resource implements Serializable {
     private Long id;
@@ -11,11 +12,18 @@ public class Resource implements Serializable {
 
     private String tag;
 
-    public Resource(Long id, String url, String name,String tag) {
+    private Long pid;
+
+    private Long priid;
+
+    private List<Resource> Children;
+
+    public Resource(Long id, String url, String name,String tag,Long pid) {
         this.id = id;
         this.url = url;
         this.name = name;
         this.tag = tag;
+        this.pid = pid;
     }
 
     public Resource() {
@@ -52,6 +60,30 @@ public class Resource implements Serializable {
 
     public void setTag(String tag) {
         this.tag = tag == null ? null : tag.trim();
+    }
+
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    public Long getPriid() {
+        return priid;
+    }
+
+    public void setPriid(Long priid) {
+        this.priid = priid;
+    }
+
+    public List<Resource> getChildren() {
+        return Children;
+    }
+
+    public void setChildren(List<Resource> children) {
+        Children = children;
     }
 
 }

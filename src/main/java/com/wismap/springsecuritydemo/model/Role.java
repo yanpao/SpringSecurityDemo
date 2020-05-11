@@ -2,7 +2,6 @@ package com.wismap.springsecuritydemo.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class Role implements Serializable {
 
@@ -16,8 +15,6 @@ public class Role implements Serializable {
     private String description;
 
     private Date genTime;
-
-    private List<Privilege> privileges;
 
     public Role(Long id, String roleName, String roleNameLocal, String description, Date genTime) {
         this.id = id;
@@ -73,13 +70,5 @@ public class Role implements Serializable {
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
-    }
-
-    public List<Privilege> getPrivileges() {
-        return privileges;
-    }
-
-    public void setPrivileges(List<Privilege> privileges) {
-        this.privileges = privileges;
     }
 }

@@ -1,11 +1,12 @@
 package com.wismap.springsecuritydemo.mapper;
 
-
 import com.wismap.springsecuritydemo.model.Ref_Privilege_Role;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface Ref_Privilege_RoleMapper {
 
     /**
@@ -42,7 +43,7 @@ public interface Ref_Privilege_RoleMapper {
      * @param roleId 角色id
      * @return 权限的id
      */
-    List<Long> selectPriByRoleid(@Param("roleId") Long roleId);
+    List<Long> selectPriByRoleid(@Param("roleId") Long roleId, @Param("pritype") Long pritype);
 
     /**
      * 查询权限被分配给了那些角色
@@ -50,5 +51,7 @@ public interface Ref_Privilege_RoleMapper {
      * @return 角色的id
      */
     List<Long> selectRoleidBypri(@Param("priId") Long priId);
+
+    Ref_Privilege_Role select(@Param("priId") Long priId, @Param("roleId") Long roleId);
 
 }

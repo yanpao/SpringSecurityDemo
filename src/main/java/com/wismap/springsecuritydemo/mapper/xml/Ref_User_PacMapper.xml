@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.Ref_User_PacMapper">
+
+  <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Ref_User_Pac">
+    <constructor>
+      <arg column="user_Id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="pac" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    user_id, pac
+  </sql>
+
+  <select id="select" parameterType="map" resultMap="BaseResultMap">
+        select * from t_ref_user_pac
+        where USER_ID = #{userid,jdbcType=INTEGER}
+        and PAC = #{pac,jdbcType=VARCHAR}
+    </select>
+
+  <select id="selectbyuser" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select * from t_ref_user_pac
+        where USER_ID = #{userid,jdbcType=INTEGER}
+    </select>
+
+  <select id="selectbypac" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from t_ref_user_pac
+        where PAC = #{pac,jdbcType=VARCHAR}
+    </select>
+
+  <delete id="delete" parameterType="map">
+        delete from t_ref_user_pac
+        where USER_ID = #{userid,jdbcType=INTEGER}
+        and PAC = #{pac,jdbcType=VARCHAR}
+    </delete>
+
+  <delete id="deleteByUserId" parameterType="java.lang.Integer">
+        delete from t_ref_user_pac
+        where USER_ID = #{userid,jdbcType=INTEGER}
+    </delete>
+
+  <delete id="deleteByPAC" parameterType="java.lang.String">
+        delete from t_ref_user_pac
+        where PAC = #{pac,jdbcType=VARCHAR}
+    </delete>
+
+  <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Ref_User_Pac">
+    insert into t_ref_user_pac (user_id, pac)
+    values (#{userId,jdbcType=INTEGER}, #{pac,jdbcType=VARCHAR})
+  </insert>
+
+</mapper>

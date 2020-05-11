@@ -109,8 +109,9 @@ public class HttpResult <T> implements Serializable {
         return message;
     }
 
-    public void setMessage(String message) {
+    public HttpResult setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     @Override

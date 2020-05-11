@@ -2,7 +2,9 @@ package com.wismap.springsecuritydemo.mapper;
 
 import com.wismap.springsecuritydemo.model.Ref_Privilege_Resource;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface Ref_Privilege_ResourceMapper {
 
     /**

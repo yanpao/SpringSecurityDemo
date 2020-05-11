@@ -10,4 +10,8 @@ public interface IResourceService {
 
     Boolean insert(Resource resource);
 
+    Boolean delete(Long resourceid);
+
+    Resource update(Resource resource)throws Exception;
+
 }

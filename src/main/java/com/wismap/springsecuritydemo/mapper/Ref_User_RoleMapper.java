@@ -13,8 +13,8 @@ public interface Ref_User_RoleMapper {
 
     int insert(Ref_User_Role record);
 
-    Boolean deleteByRoleId(@Param("roleid") Long roleid);
+    int deleteByRoleId(@Param("roleid") Long roleid);
 
-    Boolean deleteByUserId(@Param("userid") Long userid);
+    int deleteByUserId(@Param("userid") Long userid);
 
 }

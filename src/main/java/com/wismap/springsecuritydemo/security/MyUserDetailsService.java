@@ -30,9 +30,11 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new BadCredentialsException("用户不存在");
         if (!user.getStatus())
             throw new DisabledException("用户已禁用");
-        user.setLoginCount(user.getLoginCount()==null ? 1 : user.getLoginCount()+1);
-        user.setLastLoginTime(new Date());
-        userMapper.update(user);
-        return user;
+        User userupdate=new User();
+        userupdate.setLoginname(loginname);
+        userupdate.setLoginCount(user.getLoginCount()==null ? 1 : user.getLoginCount()+1);
+        userupdate.setLastLoginTime(new Date());
+        userMapper.update(userupdate);
+        return userMapper.select(loginname);
     }
 }

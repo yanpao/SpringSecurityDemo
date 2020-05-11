@@ -14,6 +14,11 @@
       <result column="login_count" property="loginCount" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <result column="status" property="status" javaType="java.lang.Boolean" typeHandler="com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler" />
       <result column="img" property="img" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <association property="pac" javaType="com.wismap.springsecuritydemo.model.PAC">
+          <id column="pac" property="pac" javaType="java.lang.String" jdbcType="VARCHAR" />
+          <result column="name" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+          <result column="parent" property="parent" javaType="java.lang.String" jdbcType="VARCHAR" />
+      </association>
       <collection property="positionList" ofType="com.wismap.springsecuritydemo.model.Position" javaType="List">
           <result column="pos_id" property="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
           <result column="position_name" property="positionName" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -53,14 +58,19 @@
         pos.description as pos_description,
         pos.department_id as department_id,
         dep.department_name as department_name,
-        pos.pid as pid
+        pos.pid as pid,
+        pac.pac as pac,
+        pac.name as name,
+        pac.parent as parent
         FROM
         t_user u
         LEFT JOIN T_REF_USER_ROLE r ON u.id = r.USER_ID
         LEFT JOIN T_ROLE o ON r.ROLE_ID = o.id
         LEFT JOIN t_ref_user_position refup on u.id=refup.user_id
         LEFT JOIN t_position pos on refup.position_id=pos.id
-        left join t_department dep on pos.department_id=dep.id
+        LEFT JOIN t_department dep on pos.department_id=dep.id
+        LEFT JOIN t_ref_user_pac refuserpac on refuserpac.user_id=u.id
+        LEFT JOIN t_pac pac on pac.pac=refuserpac.pac
   </sql>
 
   <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -68,13 +78,23 @@
         where u.loginname = #{loginname,jdbcType=VARCHAR}
   </select>
 
+    <select id="selectAllCount" resultType="java.lang.Integer">
+        select count(*) from t_user
+        <if test="name != null and  name!= ''">
+            where LOCALUSERNAME like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+
     <select id="selectAll" resultMap="BaseResultMap">
         <include refid="Base_Column_List"/>
+        <if test="name != null and  name!= ''">
+            where u.LOCALUSERNAME like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+        </if>
         order by u.id desc
         limit #{limit,jdbcType=BIGINT } offset #{offset,jdbcType=BIGINT }
     </select>
 
-  <delete id="delete" parameterType="java.lang.Integer">
+  <delete id="delete" parameterType="java.lang.String">
     delete from t_user
     where loginname = #{loginname,jdbcType=VARCHAR}
   </delete>
@@ -95,16 +115,35 @@
 
   <update id="update" parameterType="com.wismap.springsecuritydemo.model.User">
     update t_user
-    set loginname = #{loginname,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      localusername = #{localusername,jdbcType=VARCHAR},
-      mobile = #{mobile,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      gen_time = #{genTime,jdbcType=TIMESTAMP},
-      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      login_count = #{loginCount,jdbcType=INTEGER},
-      status = #{status,jdbcType=SMALLINT,typeHandler=com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler},
-      img = #{img,jdbcType=VARCHAR}
+    <set>
+        <if test="password!=null">
+          password = #{password,jdbcType=VARCHAR},
+        </if>
+        <if test="localusername!=null">
+          localusername = #{localusername,jdbcType=VARCHAR},
+        </if>
+        <if test="mobile!=null">
+          mobile = #{mobile,jdbcType=VARCHAR},
+        </if>
+        <if test="email!=null">
+          email = #{email,jdbcType=VARCHAR},
+        </if>
+        <if test="genTime!=null">
+          gen_time = #{genTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="lastLoginTime!=null">
+          last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="loginCount!=null">
+          login_count = #{loginCount,jdbcType=INTEGER},
+        </if>
+        <if test="status!=null">
+          status = #{status,jdbcType=SMALLINT,typeHandler=com.wismap.springsecuritydemo.utils.ShortToBooleanTypeHandler},
+        </if>
+        <if test="img!=null">
+          img = #{img,jdbcType=VARCHAR}
+        </if>
+    </set>
     where loginname = #{loginname,jdbcType=VARCHAR}
   </update>
 

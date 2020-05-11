@@ -8,48 +8,95 @@
             <idArg column="URL" javaType="java.lang.String" jdbcType="VARCHAR"/>
             <arg column="NAME" javaType="java.lang.String" jdbcType="VARCHAR"/>
             <arg column="TAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="PID" javaType="java.lang.Long" jdbcType="BIGINT"/>
         </constructor>
     </resultMap>
 
+    <resultMap id="BaseResultMapTree" type="com.wismap.springsecuritydemo.model.Resource">
+        <id column="id" property="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <result column="url" property="url" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result column="name" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result column="tag" property="tag" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result column="pid" property="pid" javaType="java.lang.Long" jdbcType="BIGINT" />
+        <result column="priid" property="priid" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <collection property="Children" ofType="com.wismap.springsecuritydemo.model.Resource" javaType="List">
+            <id column="idc" property="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+            <result column="urlc" property="url" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <result column="namec" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <result column="tagc" property="tag" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <result column="pidc" property="pid" javaType="java.lang.Long" jdbcType="BIGINT" />
+            <result column="priidc" property="priid" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </collection>
+    </resultMap>
+
     <sql id="Base_Column_List">
-        ID, URL, NAME,TAG
+        ID, URL, NAME,TAG,PID
     </sql>
 
-    <select id="selectAll" resultMap="BaseResultMap">
+    <sql id="Base_Column_List_Tree">
         select
-        <include refid="Base_Column_List"/>
-        from t_resource
-        order by ID
+        top.id as id,
+        top.url as url,
+        top.name as name,
+        top.tag as tag,
+        top.pid as pid,
+        reftop.pri_id as priid,
+        child.id as idc,
+        child.url as urlc,
+        child.name as namec,
+        child.tag as tagc,
+        child.pid as pidc,
+        refchild.pri_id as priidc
+        from t_resource as top
+        left join t_resource as child on child.pid = top.id
+        left join t_ref_privilege_resource as reftop on top.id=reftop.res_id
+        left join t_ref_privilege_resource as refchild on child.id=refchild.res_id
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMapTree">
+        <include refid="Base_Column_List_Tree"/>
+        where top.pid=-1
+        order by top.ID
     </select>
 
     <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Resource" useGeneratedKeys="true" keyProperty="id">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
             SELECT currval('t_resource_id_seq')
         </selectKey>
-        insert into t_resource (URL, name,tag)
-        values (#{url,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},#{tag,jdbcType=VARCHAR})
+        insert into t_resource (URL,name,tag,pid)
+        values (#{url,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},#{tag,jdbcType=VARCHAR},#{pid,jdbcType=BIGINT})
     </insert>
 
     <delete id="delete" parameterType="java.lang.Long">
         delete from t_resource
-        where ID = #{id,jdbcType=VARCHAR} or pid=#{id,jdbcType=VARCHAR}
+        where ID = #{id,jdbcType=BIGINT} or pid=#{id,jdbcType=BIGINT}
     </delete>
 
     <select id="selectByUrl" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_resource
-        where URL =#{url,jdbcType=VARCHAR}
+        <include refid="Base_Column_List_Tree"/>
+        where top.URL =#{url,jdbcType=VARCHAR}
     </select>
 
-    <select id="selectByIds" resultMap="BaseResultMap">
+    <select id="selectByPrivilegeIds" resultMap="BaseResultMapTree">
         select
-        t_resource.<include refid="Base_Column_List"/>
-        from t_resource
-        left join t_ref_privilege_resource
-        on t_resource.id = t_ref_privilege_resource.res_id
-        where
-        t_ref_privilege_resource.pri_id in
+        top.id as id,
+        top.url as url,
+        top.name as name,
+        top.tag as tag,
+        top.pid as pid,
+        reftop.pri_id as priid,
+        child.id as idc,
+        child.url as urlc,
+        child.name as namec,
+        child.tag as tagc,
+        child.pid as pidc,
+        refchild.pri_id as priidc
+        from t_resource as child
+        left join t_resource as top on child.pid = top.id
+        left join t_ref_privilege_resource as refchild on child.id=refchild.res_id
+        left join t_ref_privilege_resource as reftop on top.id=reftop.res_id
+        where top.pid = -1 and
+        refchild.pri_id in
         <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
@@ -57,7 +104,7 @@
 
     <update id="update" parameterType="com.wismap.springsecuritydemo.model.Resource">
         update t_resource
-        set NAME = #{name,jdbcType=VARCHAR},URL = #{url,jdbcType=VARCHAR},TAG = #{tag,jdbcType=VARCHAR}
+        set NAME = #{name,jdbcType=VARCHAR},URL = #{url,jdbcType=VARCHAR},TAG = #{tag,jdbcType=VARCHAR},PID = #{pid,jdbcType=BIGINT}
         where ID = #{id,jdbcType=BIGINT}
     </update>
 

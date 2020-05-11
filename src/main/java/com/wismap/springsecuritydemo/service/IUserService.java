@@ -1,24 +1,38 @@
 package com.wismap.springsecuritydemo.service;
 
+
 import com.wismap.springsecuritydemo.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IUserService {
 
-    User insert(User user);
+    User insert(User user)throws Exception;
 
     Integer delete(String loginname)throws Exception;
 
     User select(String loginname);
 
-    List<User> selectAll(Long limit,Long offset);
+    Map<String,Object> selectAll(String name, Long limit, Long offset);
 
     User update(User user);
 
-    Boolean GrantPosition(Integer Userid,Integer Positon);
+    Map<String,Object> getAllPrivileges(String loginname);
 
-    Boolean AuthorizeRole(String loginname, List<Long> RoleIDs);
+    Boolean ResetPassword(String oldpassword, String newpassword)throws Exception;
 
-    Boolean RevokeRole(String loginname, List<Long> RoleIDs);
+    Boolean ManagePassword(String loginname, String password)throws Exception;
+
+    Boolean UpdateStatus(String loginname, Boolean status)throws Exception;
+
+    Boolean GrantPAC(Integer userid, String paccode) throws Exception;
+
+    Boolean RevokePAC(Integer userid, String paccode);
+
+    Boolean GrantPosition(Integer Userid, Integer Positon);
+
+    Boolean RevokePosition(Integer Userid, Integer Positon);
+
+    Boolean AuthorizeRole(Integer userid, List<Long> RoleIDs);
 }

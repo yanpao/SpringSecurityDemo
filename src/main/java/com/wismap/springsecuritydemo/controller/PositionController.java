@@ -1,8 +1,8 @@
 package com.wismap.springsecuritydemo.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.wismap.springsecuritydemo.model.Position;
 import com.wismap.springsecuritydemo.service.IPositionService;
+import com.wismap.springsecuritydemo.utils.HttpResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +21,6 @@ public class PositionController {
     public String select(Integer id)
     {
         Position position=positionService.selectById(id);
-        return JSON.toJSONString(position);
+        return HttpResult.success(position).toString();
     }
 }

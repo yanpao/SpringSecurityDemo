@@ -3,6 +3,7 @@ package com.wismap.springsecuritydemo.security;
 import com.wismap.springsecuritydemo.mapper.RoleMapper;
 import com.wismap.springsecuritydemo.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -18,6 +19,9 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
     @Autowired
     private RoleMapper roleMapper;
 
+    @Value("#{'${security.needlogindontneedauth}'.split(',')}")
+    private List<String> urllist;
+
     private Map<String, List<ConfigAttribute>> allConfigAttribute;
 
     @Override
@@ -28,6 +32,8 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
         if (url.contains("?"))
             url = url.substring(0,url.indexOf("?"));
         List<ConfigAttribute> attributes = new ArrayList<ConfigAttribute>();
+        if (urllist.contains(url))
+            return attributes;
 
         List<Role> allRoles = roleMapper.selectByResources(url);
         for(Role role : allRoles)
@@ -35,10 +41,10 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
             SecurityConfig securityConfig=new SecurityConfig("ROLE_"+role.getRoleName());
             attributes.add(securityConfig);
         }
+
         if (attributes.size()==0)
         {
-            SecurityConfig securityConfig=new SecurityConfig("ROLE_6700D5A17CF66CA05B3074D6A07E141D");
-            attributes.add(securityConfig);
+            throw new IllegalArgumentException("该接口没有进行授权，请联系管理员为该接口进行授权");
         }
         return attributes;
     }

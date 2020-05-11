@@ -1,23 +1,19 @@
 package com.wismap.springsecuritydemo.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.wismap.springsecuritydemo.model.Role;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IRoleService {
-    /**
-     * 根据角色名查询
-     * @param roleName  角色名
-     * @return          操作状态
-     */
-    JSONObject selectByRoleName(String roleName);
 
     /**
      * 查询所有角色
      * @return 角色集合
      */
-    List<Role> selectALL();
+    Map<String,Object> selectALL(Long limit, Long offset, String roleName, String roleNameLocal);
+
+    List<Long> getRolePri(Long roleid, Long pritype);
 
     /**
      * 插入角色
@@ -36,6 +32,10 @@ public interface IRoleService {
     /**
      * 角色授权
      */
-     Boolean Authorize(Long roleID,Long[] privilegeIds);
+     Boolean Authorize(Long roleID, Long[] privilegeIds);
+
+     Boolean Revoke(Long roleID, Long[] privilegeIds);
+
+    Boolean Update(Role role);
 
 }

@@ -12,7 +12,9 @@ public interface UserMapper {
 
     Integer insert(User record);
 
-    List<User> selectAll(Long limit,Long offset);
+    Integer selectAllCount(String name);
+
+    List<User> selectAll(String name, Long limit, Long offset);
 
     User select(String loginname);
 

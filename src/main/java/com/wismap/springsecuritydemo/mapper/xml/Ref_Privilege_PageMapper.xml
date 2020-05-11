@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.Ref_Privilege_PageMapper">
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Ref_Privilege_Page">
+        <constructor>
+            <idArg column="PRI_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="PAGE_ID" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        PRI_ID, PAGE_ID
+    </sql>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Ref_Privilege_Page">
+        insert into t_ref_privilege_page (PRI_ID, PAGE_ID)
+        values (#{priId,jdbcType=BIGINT}, #{pageId,jdbcType=BIGINT})
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from t_ref_privilege_page
+        where PRI_ID = #{priId,jdbcType=BIGINT} and PAGE_ID = #{pageId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPriid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from t_ref_privilege_page where PRI_ID = #{priId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByPageid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from t_ref_privilege_page where PAGE_ID = #{pageId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

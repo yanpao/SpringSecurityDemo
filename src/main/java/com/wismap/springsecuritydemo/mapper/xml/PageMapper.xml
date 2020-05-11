@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wismap.springsecuritydemo.mapper.PageMapper">
+
+    <resultMap id="BaseResultMap" type="com.wismap.springsecuritydemo.model.Page">
+        <id column="ID" property="id"  javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="URL" property="url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="MENU_TYPE" property="menutype" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="PAGE_NAME" property="pagename" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="COMPONENT" property="component" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="SORT" property="sort" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="DESCRIPTION" property="description" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="PID" property="pid" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="ICON" property="icon" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, URL,MENU_TYPE, PAGE_NAME, COMPONENT,SORT,DESCRIPTION, PID,ICON
+    </sql>
+
+    <resultMap id="BaseResultMap2" type="com.wismap.springsecuritydemo.model.Page">
+        <id column="ID" property="id"  javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="URL" property="url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="MENUTYPE" property="menutype" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="PAGENAME" property="pagename" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="COMPONENT" property="component" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="SORT" property="sort" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="DESCRIPTION" property="description" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="PID" property="pid" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="ICON" property="icon" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="PRIID" property="priid" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="prisymbol" property="prisymbol" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <collection property="children" ofType="com.wismap.springsecuritydemo.model.Page" javaType="List">
+            <id column="IDC" property="id"  javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <result column="URLC" property="url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="MENUTYPEC" property="menutype" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <result column="PAGENAMEC" property="pagename" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="COMPONENTC" property="component" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="SORTC" property="sort" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <result column="DESCRIPTIONC" property="description" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="PIDC" property="pid" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <result column="ICONC" property="icon" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="PRIIDC" property="priid" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <result column="prisymbolc" property="prisymbol" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        </collection>
+    </resultMap>
+
+    <select id="SelectAll" resultMap="BaseResultMap2">
+        select
+        top.id as id,
+        top.url as url,
+        top.page_name as pagename,
+        top.component as component,
+        top.sort as sort,
+        top.description as description,
+        top.pid as pid,
+        top.icon as icon,
+        top.menu_type as menutype,
+        ref.pri_id as priid,
+        child.id as idc,
+        child.url as urlc,
+        child.page_name as pagenamec,
+        child.component as componentc,
+        child.sort as sortc,
+        child.description as descriptionc,
+        child.pid as pidc,
+        child.icon as iconc,
+        child.menu_type as menutypec,
+        ref2.pri_id as priidc
+        from t_page as top
+        left join t_page as child on top.id=child.pid
+        left join t_ref_privilege_page as ref  on top.id=ref.page_id
+        left join t_ref_privilege_page as ref2 on child.id=ref2.page_id
+        where top.pid=-1
+        order by top.sort,child.sort
+    </select>
+
+    <insert id="insert" parameterType="com.wismap.springsecuritydemo.model.Page">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            select currval('t_page_id_seq')
+        </selectKey>
+        insert into t_page (URL,MENU_TYPE,PAGE_NAME, COMPONENT,SORT,DESCRIPTION,PID,ICON)
+        values (#{url,jdbcType=VARCHAR}, #{menutype,jdbcType=BIGINT},#{pagename,jdbcType=VARCHAR}, #{component,jdbcType=VARCHAR},#{sort,jdbcType=BIGINT},#{description,jdbcType=VARCHAR},#{pid,jdbcType=BIGINT},#{icon,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectByUrl" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_page
+        where URL = #{url,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_page
+        where ID=#{id,jdbcType=BIGINT}
+    </select>
+
+        <select id="selectMaxSort" resultType="java.lang.Long">
+        select max(sort) from t_page group by pid having pid = #{pid,jdbcType=BIGINT}
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from t_page
+        where id = #{id,jdbcType=BIGINT} or pid = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <update id="update" parameterType="com.wismap.springsecuritydemo.model.Page">
+        update t_page
+        set
+        URL=#{url,jdbcType=VARCHAR},
+        PAGE_NAME = #{pagename,jdbcType=VARCHAR},
+        COMPONENT  = #{component,jdbcType=VARCHAR},
+        SORT = #{sort,jdbcType=BIGINT},
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+        PID = #{pid,jdbcType=BIGINT},
+        MENU_TYPE=#{menutype,jdbcType=BIGINT},
+        ICON = #{icon,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="set_up">
+		UPDATE t_page
+		SET sort=sort+1
+		WHERE sort &gt;= #{sort} AND sort &lt; #{currentSort}  AND pid =#{pid}
+	</update>
+
+    <update id="set_down">
+		UPDATE t_page
+		SET sort=sort-1
+		WHERE sort &lt;= #{sort} AND sort &gt; #{currentSort} AND pid =#{pid}
+	</update>
+
+    <update id="clearsequp">
+		UPDATE t_page
+		SET sort=sort+1
+		WHERE sort &gt;= #{sort} AND pid =#{pid}
+	</update>
+
+    <update id="clearseq">
+		UPDATE t_page
+		SET sort=sort-1
+		WHERE sort &gt;= #{sort} AND pid =#{pid}
+	</update>
+
+    <select id="selectPageByPrivilegeIds" resultMap="BaseResultMap2">
+        select
+        top.id as id,
+        top.menu_type as menutype,
+        top.url as url,
+        top.page_name as pagename,
+        top.component as component,
+        top.sort as sort,
+        top.description as description,
+        top.pid as pid,
+        top.icon as icon,
+        ref.pri_id as priid,
+        child.id as idc,
+        child.menu_type as menutypec,
+        child.url as urlc,
+        child.page_name as pagenamec,
+        child.component as componentc,
+        child.sort as sortc,
+        child.description as descriptionc,
+        child.pid as pidc,
+        child.icon as iconc,
+        ref2.pri_id as priidc
+        from t_page as top
+        left join t_page as child on top.id=child.pid
+        left join t_ref_privilege_page as ref  on top.id=ref.page_id
+        left join t_ref_privilege_page as ref2 on child.id=ref2.page_id
+        where top.pid=-1
+        and top.id in (select page_id from t_ref_privilege_page where pri_id in
+        <foreach collection="priids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+
+        order by top.sort,child.sort
+
+    </select>
+
+</mapper>

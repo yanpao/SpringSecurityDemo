@@ -2,9 +2,11 @@ package com.wismap.springsecuritydemo.mapper;
 
 import com.wismap.springsecuritydemo.model.Resource;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ResourceMapper {
 
     /**
@@ -39,7 +41,7 @@ public interface ResourceMapper {
      * @param ids api ids
      * @return api
      */
-    List<Resource> selectByIds(@Param("ids") Long[] ids);
+    List<Resource> selectByPrivilegeIds(@Param("ids") Long[] ids);
 
     /**
      *更新后台api

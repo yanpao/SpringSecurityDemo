@@ -7,7 +7,6 @@ public class Privilege implements Serializable {
 
     private Long pritype;
 
-
     public Privilege() {
         super();
     }

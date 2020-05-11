@@ -44,6 +44,8 @@ public class User implements UserDetails {
 
     private List<Role> rolesList;
 
+    private PAC pac;
+
     public User(Integer id, String loginname, String password, String localusername, String mobile, String email, Date genTime, Date lastLoginTime, Integer loginCount, Boolean status, String img) {
         this.id = id;
         this.loginname = loginname;
@@ -151,11 +153,28 @@ public class User implements UserDetails {
         this.img = img;
     }
 
+    public PAC getPac() {
+        return pac;
+    }
+
+    public void setPac(PAC pac) {
+        this.pac = pac;
+    }
+
+    public List<Role> getRolesList() {
+        return rolesList;
+    }
+
+    public void setRolesList(List<Role> rolesList) {
+        this.rolesList = rolesList;
+    }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
         List<GrantedAuthority> Authorities = new ArrayList<GrantedAuthority>();
-        for (Role role:rolesList) {
+        for (Role role:this.rolesList) {
             SimpleGrantedAuthority simpleGrantedAuthorityAdmin = new SimpleGrantedAuthority("ROLE_"+role.getRoleName());
             Authorities.add(simpleGrantedAuthorityAdmin);
         }

@@ -2,9 +2,11 @@ package com.wismap.springsecuritydemo.mapper;
 
 import com.wismap.springsecuritydemo.model.Privilege;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface PrivilegeMapper {
 
     /**
@@ -34,6 +36,8 @@ public interface PrivilegeMapper {
      * @return 插入条数
      */
     Long insert(Privilege privilege);
+
+    Long update(Privilege privilege);
 
 
 }

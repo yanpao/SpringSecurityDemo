@@ -1,48 +1,89 @@
 package com.wismap.springsecuritydemo.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.wismap.springsecuritydemo.model.Role;
 import com.wismap.springsecuritydemo.service.IRoleService;
-import com.wismap.springsecuritydemo.utils.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import com.wismap.springsecuritydemo.utils.HttpResult;
+import com.wismap.springsecuritydemo.utils.ResultCodeEnum;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping(value="role")
-public class RoleController extends BaseController {
+@RequestMapping(value="role",produces = "application/json;charset=utf-8")
+public class RoleController{
 
-    @Autowired
     private IRoleService roleService;
-
-    @RequestMapping(value = "/all",method = RequestMethod.GET,produces = "application/json")
-    public String AllRoles()
+    public RoleController(IRoleService roleService)
     {
-        List<Role> allRoles = roleService.selectALL();
-        return JSON.toJSONString(allRoles);
+        this.roleService=roleService;
     }
 
-    @RequestMapping(value = "/select",method = RequestMethod.GET,produces = "application/json")
-    public String SelectRole(@RequestParam(value = "rolename")String rolename)
+    @GetMapping("/all")
+    public String AllRoles(@RequestParam(value = "limit") Long limit,
+                           @RequestParam(value = "offset") Long offset,
+                           @RequestParam(value = "roleName",required = false) String roleName,
+                           @RequestParam(value = "roleNameLocal",required = false) String roleNameLocal)
     {
-        JSONObject role = roleService.selectByRoleName(rolename);
-        return role.toJSONString();
+        return HttpResult.success(roleService.selectALL(limit,offset*limit,roleName,roleNameLocal)).toString();
     }
 
-    @RequestMapping(value = "/authorize",method = RequestMethod.POST,produces = "application/json")
+    @GetMapping("/privilege")
+    public String  GetRolePrivilege(@RequestParam Long roleid,
+                                    @RequestParam Long pritype)
+    {
+        return HttpResult.success(roleService.getRolePri(roleid,pritype)).toString();
+    }
+
+    @PostMapping("/insert")
+    public String Insert(@RequestBody Role role)
+    {
+        if (roleService.insert(role)>0)
+            return HttpResult.success().setMessage("新增角色成功").toString();
+        else
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).setMessage("新增角色失败").toString();
+    }
+
+    @PostMapping("/delete")
+    public String Delete(Long roleid)
+    {
+       if (roleService.delete(roleid)>0)
+           return HttpResult.success().setMessage("删除角色成功").toString();
+       else
+           return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).setMessage("删除角色失败").toString();
+    }
+
+    @PostMapping("/update")
+    public String Update(@RequestBody Role role)
+    {
+        if (roleService.Update(role))
+            return HttpResult.success().setMessage("更新角色成功").toString();
+        else
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).setMessage("更新角色失败").toString();
+    }
+
+    @PostMapping("/authorize")
     public String Authorize(@RequestParam(value = "roleid")Long roleid,
                             @RequestParam(value = "privileges")Long[] priIds)
     {
         if (roleService.Authorize(roleid,priIds))
         {
-            return renderSuccess("角色授权成功");
+            return HttpResult.success().setMessage("角色授权成功").toString();
         }
         else
         {
-            return renderError();
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).setMessage("角色授权失败").toString();
+        }
+    }
+
+    @PostMapping("/revoke")
+    public String Revoke(@RequestParam(value = "roleid")Long roleid,
+                         @RequestParam(value = "privileges")Long[] priIds)
+    {
+        if (roleService.Revoke(roleid,priIds))
+        {
+            return HttpResult.success().setMessage("取消角色授权成功").toString();
+        }
+        else
+        {
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).setMessage("取消角色授权失败").toString();
         }
     }
 
