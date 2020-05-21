@@ -23,7 +23,7 @@ public class MySessionInformationExpiredStrategy implements SessionInformationEx
         response.setContentType("application/json;charset=UTF-8");
         Map<String,String> map=new HashMap<>();
         map.put("code", "401");
-        map.put("data", "session失效，请重新登录");
+        map.put("data", "您的账号在其他设备上已登录，如果不是您本人操作，请立即更改密码");
         map.put("msg", "session失效！");
         response.getWriter().write(objectMapper.writeValueAsString(map));
     }

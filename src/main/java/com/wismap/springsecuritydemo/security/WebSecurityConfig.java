@@ -55,9 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             sessionManagement()
                 .invalidSessionStrategy(myInvalidSessionStrategy())
                 .maximumSessions(1)
-                .expiredSessionStrategy(mySessionInformationExpiredStrategy())
-                .maxSessionsPreventsLogin(true)
-                .sessionRegistry(sessionRegistry());
+                .maxSessionsPreventsLogin(false)
+                .sessionRegistry(sessionRegistry())
+                .expiredSessionStrategy(mySessionInformationExpiredStrategy());
     }
 
     @Override

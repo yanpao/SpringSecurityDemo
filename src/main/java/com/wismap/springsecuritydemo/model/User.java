@@ -210,4 +210,22 @@ public class User implements UserDetails {
     {
         return status;
     }
+
+    @Override
+    public String toString() {
+        return loginname.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return loginname.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass()==this.getClass())
+            return this.toString().equals(obj.toString());
+        else
+            return false;
+    }
 }
