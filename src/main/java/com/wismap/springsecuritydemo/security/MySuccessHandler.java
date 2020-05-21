@@ -14,6 +14,6 @@ public class MySuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(HttpResult.success("登录成功").toString());
+        response.getWriter().write(HttpResult.success().setMessage("登录成功").toString());
     }
 }

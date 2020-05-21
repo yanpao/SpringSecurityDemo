@@ -48,11 +48,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(myFailureHandler())
                 .and()
             .logout().and()
-            //.rememberMe().key("yanpao").tokenValiditySeconds(6).and()//可以记住，但是过期时间没成功
-            .httpBasic()
-                .and()
-            .csrf().disable().
-            sessionManagement()
+            .rememberMe().key("yanpao").tokenValiditySeconds(60000).and()
+            .httpBasic().and()
+            .csrf().disable()
+            .sessionManagement()
                 .invalidSessionStrategy(myInvalidSessionStrategy())
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
@@ -64,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
         auth.authenticationProvider(daoAuthenticationProvider());
+        auth.userDetailsService(myUserDetailsService);
     }
 
     @Bean

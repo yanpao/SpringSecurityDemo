@@ -36,9 +36,7 @@ public class UserController{
             User user = userService.select(username);
             return HttpResult.success(user).toString();
         } else {
-            String username = principal.toString();
-            User user = userService.select(username);
-            return HttpResult.success(user).toString();
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).setMessage("用户未登录").toString();
         }
     }
 
