@@ -1,7 +1,5 @@
 package com.wismap.springsecuritydemo.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.wismap.springsecuritydemo.model.Position;
 import com.wismap.springsecuritydemo.model.User;
 import com.wismap.springsecuritydemo.service.IPositionService;
@@ -201,15 +199,8 @@ public class UserController{
     public String IsLeader(String loginname)
     {
         User user = userService.select(loginname);
-        JSONArray jsonArray = new JSONArray();
-        for(Position position:user.getPositionList())
-        {
-            JSONObject json=new JSONObject();
-            json.put(position.getDepartmentName(), positionService.isLeader(position.getId()));
-            jsonArray.add(json);
-        }
-        if (jsonArray.size()>0)
-            return HttpResult.success(jsonArray).toString();
+        if (user.getPositionList().size()>0)
+            return HttpResult.success(user.getPositionList()).toString();
         else
             return HttpResult.failure(ResultCodeEnum.SERVER_ERROR).setMessage("此人没有职位").toString();
     }

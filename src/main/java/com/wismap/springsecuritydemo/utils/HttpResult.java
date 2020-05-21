@@ -1,6 +1,7 @@
 package com.wismap.springsecuritydemo.utils;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
 
@@ -115,7 +116,16 @@ public class HttpResult <T> implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return JSON.toJSONString(this);
+    public String toString(){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(this);
+        }
+        catch (Exception ex)
+        {
+            return ex.getMessage();
+        }
+
     }
+
 }
